@@ -20,7 +20,7 @@
       margin: 0;
     }
     .card {
-      max-width: 740px;
+      max-width: 760px;
       margin: 0 auto;
       background: #221647;
       padding: 24px;
@@ -37,7 +37,7 @@
       background: #140d2b;
       border: 1px solid rgba(245, 185, 66, 0.35);
       border-radius: 12px;
-      max-width: 620px;
+      max-width: 640px;
     }
     #piLoginBtn {
       background: linear-gradient(135deg, #f5b942, #ffcf66);
@@ -78,7 +78,7 @@
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
-    .nav-btn, .sport-btn, .odd-btn, .action-btn {
+    .nav-btn, .sport-btn, .odd-btn, .action-btn, .mini-btn {
       background: #2c1d5c;
       color: #ffffff;
       border: 1px solid rgba(245, 185, 66, 0.3);
@@ -87,10 +87,16 @@
       font-size: 12px;
       cursor: pointer;
     }
-    .nav-btn.active {
+    .nav-btn.active, .sport-btn.active {
       background: #f5b942;
       color: #140d2b;
       font-weight: bold;
+    }
+    .odd-btn.selected {
+      background: #f5b942;
+      color: #140d2b;
+      font-weight: bold;
+      border-color: #ffcf66;
     }
     .panel {
       background: #221647;
@@ -108,6 +114,23 @@
       margin-bottom: 8px;
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+    .match-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .live-pill {
+      background: rgba(245, 185, 66, 0.16);
+      color: #f5b942;
+      border: 1px solid rgba(245, 185, 66, 0.4);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: bold;
+    }
     .odd-btn {
       flex: 1;
       min-width: 75px;
@@ -117,6 +140,11 @@
       background: #f5b942;
       color: #140d2b;
       font-weight: bold;
+    }
+    .mini-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      margin-top: 6px;
     }
     .logout-btn {
       background: #4a1c2f;
@@ -133,7 +161,7 @@
       background: #140d2b;
       border: 1px solid rgba(245, 185, 66, 0.3);
       border-radius: 12px;
-      max-width: 620px;
+      max-width: 640px;
       text-align: left;
     }
     .ad-header {
@@ -161,26 +189,24 @@
       background: #140d2b;
       border: 1px solid rgba(245, 185, 66, 0.25);
       border-radius: 10px;
-      max-width: 620px;
+      max-width: 640px;
       font-size: 12px;
       color: #d8cff0;
       line-height: 1.55;
       text-align: left;
     }
-    input[type="number"], select {
+    input[type="number"] {
       padding: 6px 8px;
       border-radius: 6px;
       border: 1px solid rgba(245, 185, 66, 0.4);
       background: #140d2b;
       color: #ffffff;
       font-size: 13px;
-    }
-    input[type="number"] {
       width: 110px;
     }
-    .currencies {
+    .pi-notice {
       line-height: 1.75;
-      font-size: 15px;
+      font-size: 14px;
       color: #e6defc;
       margin-top: 18px;
     }
@@ -189,11 +215,11 @@
 <body>
   <div class="card">
     <h1>WinPi</h1>
-    <p>Global football leagues, Lucky Spins &amp; Aviator mini-games.</p>
+    <p>Open Mainnet Pi sportsbook (1X2), Lucky Spins &amp; Aviator mini-games built for Pi Browser Pioneers.</p>
 
     <div class="pi-auth-box">
       <button id="piLoginBtn" type="button">Sign in with Pi</button>
-      <div id="piStatus">Not signed in yet.</div>
+      <div id="piStatus">Not signed in yet. Open in Pi Browser for Open Mainnet Pi SDK authentication.</div>
 
       <div id="winpiApp">
         <div class="top-bar">
@@ -202,9 +228,7 @@
             <span id="winpiUserBadge" style="font-size: 12px; color: #9be7ff; margin-left: 8px;">@pioneer</span>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <label for="currencySelect" style="font-size: 12px; color: #e6defc;">Currency:</label>
-            <select id="currencySelect" onchange="changeCurrency()"></select>
-            <span style="font-size: 12px; color: #f5b942;">Balance: <strong id="winpiBalance">10.00</strong> <span id="winpiCurrLabel">Pi</span></span>
+            <span style="font-size: 12px; color: #f5b942;">Balance: <strong id="winpiBalance">10.00</strong> Pi</span>
             <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
           </div>
         </div>
@@ -220,19 +244,23 @@
         <!-- HOME & BET SECTION -->
         <div id="secHome" class="panel">
           <div class="sport-tabs">
-            <button type="button" class="sport-btn" onclick="renderMatches('Football')">Football</button>
-            <button type="button" class="sport-btn" onclick="renderMatches('Basketball')">Basketball</button>
-            <button type="button" class="sport-btn" onclick="renderMatches('Tennis')">Tennis</button>
+            <button type="button" id="sportFootball" class="sport-btn active" onclick="renderMatches('Football')">Football</button>
+            <button type="button" id="sportBasketball" class="sport-btn" onclick="renderMatches('Basketball')">Basketball</button>
+            <button type="button" id="sportTennis" class="sport-btn" onclick="renderMatches('Tennis')">Tennis</button>
           </div>
 
           <div id="winpiMatchesList"></div>
 
           <div class="match-card" style="margin-top: 10px;">
-            <div><strong>Selected Slip:</strong> <span id="slipSelection">None selected</span></div>
+            <div><strong>Bet Slip:</strong> <span id="slipSelection">None selected</span></div>
+            <div style="margin-top: 4px; font-size: 12px; color: #d8cff0;">
+              Odds: <strong id="slipOdds">0.00</strong> | Potential Win: <strong id="slipPotentialWin" style="color: #f5b942;">0.00 Pi</strong>
+            </div>
             <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label for="stakeInput">Stake (<span class="curr-unit">Pi</span>):</label>
-              <input id="stakeInput" type="number" min="0.01" step="0.1" value="1" />
+              <label for="stakeInput">Stake (Pi):</label>
+              <input id="stakeInput" type="number" min="0.01" step="0.1" value="1" oninput="updateSlipPreview()" />
               <button type="button" class="action-btn" onclick="placeDemoBet()">Place Bet</button>
+              <button type="button" class="sport-btn" onclick="clearSlip()">Clear</button>
             </div>
             <div id="slipMsg" style="margin-top: 6px; color: #9be7ff; font-size: 12px;"></div>
           </div>
@@ -242,9 +270,9 @@
         <div id="secCasino" class="panel" style="display: none;">
           <strong>WinPi Casino (Lucky Spins &amp; Aviator)</strong>
           <div class="match-card" style="margin-top: 8px;">
-            <div>Play Lucky Spins or Aviator multiplier round using <strong class="curr-unit">Pi</strong>.</div>
+            <div>Play Lucky Spins or Aviator multiplier round using <strong>Pi</strong>.</div>
             <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label for="casinoStake">Amount (<span class="curr-unit">Pi</span>):</label>
+              <label for="casinoStake">Amount (Pi):</label>
               <input id="casinoStake" type="number" min="0.01" step="0.1" value="1" />
               <button type="button" class="action-btn" onclick="playCasino('Lucky Spins')">Spin Wheel (2x)</button>
               <button type="button" class="sport-btn" onclick="playCasino('Aviator')">Aviator Cashout (1.8x)</button>
@@ -255,21 +283,24 @@
 
         <!-- MY BETS SECTION -->
         <div id="secBets" class="panel" style="display: none;">
-          <strong>My Bets &amp; Casino History</strong>
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <strong>My Bets &amp; Casino History</strong>
+            <button type="button" class="sport-btn" onclick="settleOpenSportsBets()">Settle Open Bets</button>
+          </div>
           <div id="myBetsList" style="margin-top: 8px;">No bets placed yet.</div>
         </div>
 
         <!-- DEPOSIT & WITHDRAW SECTION -->
         <div id="secWallet" class="panel" style="display: none;">
-          <strong>Deposit &amp; Withdraw (<span class="curr-unit">Pi</span>)</strong>
+          <strong>Deposit &amp; Withdraw (Pi)</strong>
           <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <label for="walletAmount">Amount (<span class="curr-unit">Pi</span>):</label>
+            <label for="walletAmount">Amount (Pi):</label>
             <input id="walletAmount" type="number" min="0.01" step="0.5" value="2" />
             <button type="button" class="action-btn" onclick="handleWallet('deposit')">Deposit</button>
             <button type="button" class="sport-btn" onclick="handleWallet('withdraw')">Withdraw</button>
           </div>
           <div id="walletMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;">
-            Limits: Pi (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi) | Fiat (Min Deposit/Withdraw: $0.50, Max Withdraw: $100,000).
+            Open Mainnet Pi Limits: Min Deposit/Withdraw: 1 Pi | Max Withdraw: 1,000 Pi.
           </div>
         </div>
 
@@ -277,8 +308,8 @@
         <div id="secProfile" class="panel" style="display: none;">
           <strong>Pioneer Profile</strong>
           <div style="margin-top: 6px;">Username: <span id="profileUsername">@pioneer</span></div>
-          <div>Active Currency: <span id="profileCurrency">Pi</span></div>
-          <div>Status: Authenticated via Pi SDK</div>
+          <div>Active Currency: Pi</div>
+          <div>Network Mode: Open Mainnet (Pi SDK)</div>
           <div style="margin-top: 8px;">
             <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
           </div>
@@ -311,57 +342,37 @@
 
     <!-- 18+, RULES & LIMITS -->
     <div class="rules-box">
-      <strong style="color: #f5b942;">18+, Rules &amp; Limits:</strong>
+      <strong style="color: #f5b942;">18+, Rules, Fair Play &amp; Limits:</strong>
       <ul style="margin: 6px 0 0 18px; padding: 0;">
-        <li><strong>18+ Only:</strong> Users must be at least 18 years old and comply with applicable local laws and regulations.</li>
-        <li><strong>Match &amp; Game Rules:</strong> Events and mini-games are settled according to official match rules and game terms across Football, Basketball, Tennis, Lucky Spins, and Aviator.</li>
-        <li><strong>Limits &amp; Responsible Play:</strong> Pi limits (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi) | Fiat limits (Min Deposit/Withdraw: $0.50, Max Withdraw: $100,000 or equivalent). Set personal limits and play responsibly.</li>
+        <li><strong>18+ &amp; Compliance:</strong> Users must be at least 18 years old and follow Pi Network terms as well as applicable local laws.</li>
+        <li><strong>Open Mainnet &amp; Pi Only:</strong> WinPi is built for Open Mainnet operation using Pi exclusively (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi), not a testnet-only or demo-only product.</li>
+        <li><strong>Fair Play &amp; Settlement:</strong> Match picks (1X2 / markets) and mini-games (Lucky Spins, Aviator) follow transparent odds/multipliers and official settlement rules; abuse or automated exploits are prohibited.</li>
+        <li><strong>Live Pi Payments &amp; Backend Settlement:</strong> Client-side balance previews assist interface testing; real Open Mainnet Pi deposits and withdrawals require Pi SDK payment flows and verified backend settlement.</li>
       </ul>
     </div>
 
-    <p class="currencies">
-      <strong>Supported currencies (Global Pioneers):</strong>
-      Pi, USD, EUR, GBP, BIF, CDF, ZMW, NGN, ZAR, MZN, EGP, SAR,
-      TZS, UGX, KES, RWF, GHS, ETB, MAD, XOF, XAF, AOA, BWP, NAD, MWK, SLL, GMD,
-      AED, QAR, KWD, BHD, OMR, JOD, TRY, INR, PKR, BDT, IDR, MYR, PHP, THB, VND, KRW, JPY, CNY,
-      CAD, MXN, BRL, ARS, CLP, COP, PEN, AUD, NZD &amp; more.
+    <p class="pi-notice">
+      <strong>Open Mainnet Notice:</strong> Configured for Open Mainnet Pi SDK (sandbox: false) in Pi Browser with Pi-only transactions and backend-verified settlement.
     </p>
   </div>
 
   <script>
-    const orderedCurrencies = [
-      "Pi", "USD", "EUR", "GBP", "BIF", "CDF", "ZMW", "NGN", "ZAR", "MZN", "EGP", "SAR",
-      "TZS", "UGX", "KES", "RWF", "GHS", "ETB", "MAD", "XOF", "XAF", "AOA", "BWP", "NAD", "MWK", "SLL", "GMD",
-      "AED", "QAR", "KWD", "BHD", "OMR", "JOD", "TRY", "INR", "PKR", "BDT", "IDR", "MYR", "PHP", "THB", "VND", "KRW", "JPY", "CNY",
-      "CAD", "MXN", "BRL", "ARS", "CLP", "COP", "PEN", "AUD", "NZD"
-    ];
-
-    const rateFromPi = {
-      Pi: 1, USD: 1, EUR: 0.92, GBP: 0.79, BIF: 2900, CDF: 2800, ZMW: 27, NGN: 1600,
-      ZAR: 18.2, MZN: 63.8, EGP: 49, SAR: 3.75, TZS: 2700, UGX: 3700, KES: 129, RWF: 1350,
-      GHS: 15.5, ETB: 120, MAD: 10, XOF: 605, XAF: 605, AOA: 910, BWP: 13.6, NAD: 18.2,
-      MWK: 1730, SLL: 22, GMD: 70, AED: 3.67, QAR: 3.64, KWD: 0.31, BHD: 0.38, OMR: 0.38,
-      JOD: 0.71, TRY: 34.5, INR: 84, PKR: 278, BDT: 119, IDR: 15800, MYR: 4.4, PHP: 58.5,
-      THB: 34.5, VND: 25400, KRW: 1390, JPY: 154, CNY: 7.2, CAD: 1.39, MXN: 20.2, BRL: 5.8,
-      ARS: 1000, CLP: 970, COP: 4400, PEN: 3.75, AUD: 1.53, NZD: 1.69
-    };
-
     let currentUser = "@pioneer";
     let piBalance = 10.0;
-    let activeCurrency = "Pi";
+    let activeSport = "Football";
     let selectedPick = null;
     const betsHistory = [];
 
     const fixturesBySport = {
       Football: [
-        { match: "Yanga SC vs Mamelodi Sundowns", o1: 2.40, ox: 3.10, o2: 2.85 },
-        { match: "Real Madrid vs AS Roma", o1: 1.65, ox: 3.80, o2: 4.90 }
+        { id: "fb1", status: "LIVE 34'", match: "Yanga SC vs Mamelodi Sundowns", o1: 2.40, ox: 3.10, o2: 2.85 },
+        { id: "fb2", status: "UPCOMING 20:00", match: "Real Madrid vs AS Roma", o1: 1.65, ox: 3.80, o2: 4.90 }
       ],
       Basketball: [
-        { match: "Court Kings vs Metro Hawks", o1: 1.75, ox: 12.0, o2: 2.05 }
+        { id: "bb1", status: "LIVE Q2", match: "Court Kings vs Metro Hawks", o1: 1.75, ox: 12.0, o2: 2.05 }
       ],
       Tennis: [
-        { match: "Player A vs Player B", o1: 1.58, ox: 1.0, o2: 2.35 }
+        { id: "tn1", status: "LIVE SET 2", match: "Player A vs Player B", o1: 1.58, ox: 1.0, o2: 2.35 }
       ]
     };
 
@@ -391,36 +402,29 @@
 
     let currentAdIndex = 0;
 
-    function populateCurrencyDropdown() {
-      const sel = document.getElementById("currencySelect");
-      sel.innerHTML = orderedCurrencies
-        .map((c) => `<option value="${c}">${c}</option>`)
-        .join("");
-      sel.value = activeCurrency;
+    function refreshBalanceUI() {
+      document.getElementById("winpiBalance").textContent = (+piBalance).toFixed(2);
     }
 
-    function toSelectedCurrency(amountInPi) {
-      const rate = rateFromPi[activeCurrency] || 1;
-      return +(amountInPi * rate).toFixed(2);
+    function updateSlipPreview() {
+      const stakeVal = parseFloat(document.getElementById("stakeInput").value);
+      const validStake = !isNaN(stakeVal) && stakeVal > 0 ? stakeVal : 0;
+      if (!selectedPick) {
+        document.getElementById("slipOdds").textContent = "0.00";
+        document.getElementById("slipPotentialWin").textContent = "0.00 Pi";
+        return;
+      }
+      document.getElementById("slipOdds").textContent = selectedPick.odd.toFixed(2);
+      const pot = +(validStake * selectedPick.odd).toFixed(2);
+      document.getElementById("slipPotentialWin").textContent = `${pot.toFixed(2)} Pi`;
     }
 
-    function toPi(amountInSelected) {
-      const rate = rateFromPi[activeCurrency] || 1;
-      return amountInSelected / rate;
-    }
-
-    function refreshCurrencyUI() {
-      document.getElementById("winpiCurrLabel").textContent = activeCurrency;
-      document.getElementById("profileCurrency").textContent = activeCurrency;
-      document.getElementById("winpiBalance").textContent = toSelectedCurrency(piBalance).toFixed(2);
-      document.querySelectorAll(".curr-unit").forEach((el) => {
-        el.textContent = activeCurrency;
-      });
-    }
-
-    function changeCurrency() {
-      activeCurrency = document.getElementById("currencySelect").value;
-      refreshCurrencyUI();
+    function clearSlip() {
+      selectedPick = null;
+      document.getElementById("slipSelection").textContent = "None selected";
+      document.getElementById("slipMsg").textContent = "";
+      updateSlipPreview();
+      renderMatches(activeSport);
     }
 
     function showWinpiSection(section) {
@@ -445,81 +449,152 @@
     }
 
     function renderMatches(sport) {
+      activeSport = sport || "Football";
+      ["Football", "Basketball", "Tennis"].forEach((s) => {
+        const btn = document.getElementById("sport" + s);
+        if (btn) btn.classList.toggle("active", s === activeSport);
+      });
+
       const container = document.getElementById("winpiMatchesList");
-      const list = fixturesBySport[sport] || fixturesBySport.Football;
+      const list = fixturesBySport[activeSport] || fixturesBySport.Football;
       container.innerHTML = list
-        .map(
-          (item) => `
-          <div class="match-card">
-            <div style="margin-bottom: 6px;"><strong>${item.match}</strong> <span style="color:#9be7ff; font-size:11px;">(${sport})</span></div>
-            <div class="odds-row" style="margin-bottom: 0;">
-              <button type="button" class="odd-btn" onclick="pickOdd('${item.match}', '1', ${item.o1})">1 (${item.o1})</button>
-              <button type="button" class="odd-btn" onclick="pickOdd('${item.match}', 'X', ${item.ox})">X (${item.ox})</button>
-              <button type="button" class="odd-btn" onclick="pickOdd('${item.match}', '2', ${item.o2})">2 (${item.o2})</button>
+        .map((item) => {
+          const is1 = selectedPick && selectedPick.match === item.match && selectedPick.market === "1";
+          const isX = selectedPick && selectedPick.match === item.match && selectedPick.market === "X";
+          const is2 = selectedPick && selectedPick.match === item.match && selectedPick.market === "2";
+          return `
+            <div class="match-card">
+              <div class="match-meta">
+                <div><strong>${item.match}</strong> <span style="color:#9be7ff; font-size:11px;">(${activeSport})</span></div>
+                <span class="live-pill">${item.status}</span>
+              </div>
+              <div class="odds-row" style="margin-bottom: 0;">
+                <button type="button" class="odd-btn ${is1 ? "selected" : ""}" onclick="pickOdd('${item.match}', '1', ${item.o1})">1 (${item.o1.toFixed(2)})</button>
+                <button type="button" class="odd-btn ${isX ? "selected" : ""}" onclick="pickOdd('${item.match}', 'X', ${item.ox})">X (${item.ox.toFixed(2)})</button>
+                <button type="button" class="odd-btn ${is2 ? "selected" : ""}" onclick="pickOdd('${item.match}', '2', ${item.o2})">2 (${item.o2.toFixed(2)})</button>
+              </div>
             </div>
-          </div>
-        `
-        )
+          `;
+        })
         .join("");
     }
 
     function pickOdd(match, market, odd) {
       selectedPick = { match, market, odd };
-      document.getElementById("slipSelection").textContent = `${match} — Pick ${market} @ ${odd}`;
+      document.getElementById("slipSelection").textContent = `${match} — Pick ${market} @ ${odd.toFixed(2)}`;
       document.getElementById("slipMsg").textContent = "";
+      updateSlipPreview();
+      renderMatches(activeSport);
     }
 
     function placeDemoBet() {
       const msg = document.getElementById("slipMsg");
-      const stakeInputVal = parseFloat(document.getElementById("stakeInput").value);
+      const stakeVal = parseFloat(document.getElementById("stakeInput").value);
       if (!selectedPick) {
         msg.textContent = "Please select 1, X, or 2 on a match first.";
         return;
       }
-      if (isNaN(stakeInputVal) || stakeInputVal <= 0) {
-        msg.textContent = "Please enter a valid stake amount.";
+      if (isNaN(stakeVal) || stakeVal <= 0) {
+        msg.textContent = "Please enter a valid stake amount in Pi.";
         return;
       }
-      const stakeInPi = toPi(stakeInputVal);
-      if (stakeInPi > piBalance + 1e-9) {
-        msg.textContent = "Insufficient balance for this stake.";
+      if (stakeVal > piBalance + 1e-9) {
+        msg.textContent = "Insufficient Pi balance for this stake.";
         return;
       }
-      piBalance = Math.max(0, +(piBalance - stakeInPi).toFixed(4));
-      refreshCurrencyUI();
-      const potentialWinCurr = +(stakeInputVal * selectedPick.odd).toFixed(2);
+      piBalance = Math.max(0, +(piBalance - stakeVal).toFixed(4));
+      refreshBalanceUI();
+      const potentialWin = +(stakeVal * selectedPick.odd).toFixed(2);
       betsHistory.unshift({
-        match: `${selectedPick.match} (Pick ${selectedPick.market} @ ${selectedPick.odd})`,
-        stakeText: `${stakeInputVal} ${activeCurrency}`,
-        winText: `${potentialWinCurr} ${activeCurrency}`
+        id: "bet_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+        kind: "sports",
+        status: "OPEN",
+        stakeNum: stakeVal,
+        oddNum: selectedPick.odd,
+        match: `${selectedPick.match} (Pick ${selectedPick.market} @ ${selectedPick.odd.toFixed(2)})`,
+        stakeText: `${stakeVal.toFixed(2)} Pi`,
+        winText: `${potentialWin.toFixed(2)} Pi`
       });
       renderMyBets();
-      msg.textContent = `Bet placed! Stake: ${stakeInputVal} ${activeCurrency} | Potential win: ${potentialWinCurr} ${activeCurrency}`;
+      msg.textContent = `Bet placed (${statusLabel("OPEN")})! Stake: ${stakeVal.toFixed(2)} Pi | Potential win: ${potentialWin.toFixed(2)} Pi`;
+    }
+
+    function statusLabel(st) {
+      return st;
+    }
+
+    function cashoutBet(betId) {
+      const bet = betsHistory.find((b) => b.id === betId);
+      if (!bet || bet.status !== "OPEN") return;
+      const cashoutAmt = +(bet.stakeNum * 0.85).toFixed(2);
+      piBalance = +(piBalance + cashoutAmt).toFixed(4);
+      bet.status = "CASHED OUT";
+      bet.winText = `${cashoutAmt.toFixed(2)} Pi`;
+      refreshBalanceUI();
+      renderMyBets();
+    }
+
+    function settleOpenSportsBets() {
+      let settledCount = 0;
+      betsHistory.forEach((bet) => {
+        if (bet.kind === "sports" && bet.status === "OPEN") {
+          const won = Math.random() >= 0.45;
+          if (won) {
+            const payout = +(bet.stakeNum * bet.oddNum).toFixed(2);
+            piBalance = +(piBalance + payout).toFixed(4);
+            bet.status = "WON";
+            bet.winText = `${payout.toFixed(2)} Pi`;
+          } else {
+            bet.status = "LOST";
+            bet.winText = "0.00 Pi";
+          }
+          settledCount++;
+        }
+      });
+      refreshBalanceUI();
+      renderMyBets();
+      const box = document.getElementById("myBetsList");
+      if (settledCount > 0) {
+        const note = document.createElement("div");
+        note.style.cssText = "color:#9be7ff; font-size:12px; margin-bottom:8px;";
+        note.textContent = `Settled ${settledCount} open bet(s) in preview mode.`;
+        box.prepend(note);
+      }
     }
 
     function playCasino(gameName) {
       const msg = document.getElementById("casinoMsg");
       const amtVal = parseFloat(document.getElementById("casinoStake").value);
       if (isNaN(amtVal) || amtVal <= 0) {
-        msg.textContent = "Please enter a valid amount.";
+        msg.textContent = "Please enter a valid Pi amount.";
         return;
       }
-      const amtInPi = toPi(amtVal);
-      if (amtInPi > piBalance + 1e-9) {
-        msg.textContent = "Insufficient balance to play casino.";
+      if (amtVal > piBalance + 1e-9) {
+        msg.textContent = "Insufficient Pi balance to play casino.";
         return;
       }
       const mult = gameName === "Lucky Spins" ? 2.0 : 1.8;
-      piBalance = Math.max(0, +(piBalance - amtInPi).toFixed(4));
-      const winCurr = +(amtVal * mult).toFixed(2);
-      refreshCurrencyUI();
+      piBalance = Math.max(0, +(piBalance - amtVal).toFixed(4));
+      const won = Math.random() >= 0.5;
+      const payout = won ? +(amtVal * mult).toFixed(2) : 0;
+      if (won) {
+        piBalance = +(piBalance + payout).toFixed(4);
+      }
+      refreshBalanceUI();
       betsHistory.unshift({
-        match: `Casino: ${gameName} (${mult}x)`,
-        stakeText: `${amtVal} ${activeCurrency}`,
-        winText: `${winCurr} ${activeCurrency}`
+        id: "cas_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+        kind: "casino",
+        status: won ? "WON" : "LOST",
+        stakeNum: amtVal,
+        oddNum: mult,
+        match: `Casino: ${gameName} (${mult.toFixed(1)}x)`,
+        stakeText: `${amtVal.toFixed(2)} Pi`,
+        winText: `${payout.toFixed(2)} Pi`
       });
       renderMyBets();
-      msg.textContent = `${gameName} round started — Stake: ${amtVal} ${activeCurrency} | Target payout: ${winCurr} ${activeCurrency}`;
+      msg.textContent = won
+        ? `${gameName} WON! Stake: ${amtVal.toFixed(2)} Pi | Payout: ${payout.toFixed(2)} Pi`
+        : `${gameName} finished — Stake: ${amtVal.toFixed(2)} Pi | Payout: 0.00 Pi`;
     }
 
     function renderMyBets() {
@@ -529,9 +604,20 @@
         return;
       }
       box.innerHTML = betsHistory
-        .map(
-          (b) => `<div class="match-card"><strong>${b.match}</strong><br>Stake: ${b.stakeText} | Potential / Target: <strong>${b.winText}</strong></div>`
-        )
+        .map((b) => {
+          const canCashout = b.kind === "sports" && b.status === "OPEN";
+          const cashoutVal = (b.stakeNum * 0.85).toFixed(2);
+          return `
+            <div class="match-card">
+              <div class="match-meta">
+                <strong>${b.match}</strong>
+                <span class="live-pill">${b.status}</span>
+              </div>
+              Stake: ${b.stakeText} | Payout / Potential: <strong>${b.winText}</strong>
+              ${canCashout ? `<br><button type="button" class="mini-btn" onclick="cashoutBet('${b.id}')">Cashout (${cashoutVal} Pi)</button>` : ""}
+            </div>
+          `;
+        })
         .join("");
     }
 
@@ -539,58 +625,34 @@
       const msg = document.getElementById("walletMsg");
       const amtVal = parseFloat(document.getElementById("walletAmount").value);
       if (isNaN(amtVal) || amtVal <= 0) {
-        msg.textContent = "Please enter a valid amount.";
+        msg.textContent = "Please enter a valid amount in Pi.";
         return;
       }
 
-      const usdRate = rateFromPi["USD"] || 1;
-      const amtInPi = toPi(amtVal);
-      const amtInUsd = amtInPi * usdRate;
-
       if (type === "deposit") {
-        if (activeCurrency === "Pi") {
-          if (amtInPi < 1) {
-            msg.textContent = "Minimum deposit for Pi is 1 Pi.";
-            return;
-          }
-        } else {
-          if (amtInUsd + 1e-9 < 0.5) {
-            msg.textContent = "Minimum deposit for fiat currencies is $0.50 (0.5 USD) or equivalent.";
-            return;
-          }
-        }
-
-        piBalance = +(piBalance + amtInPi).toFixed(4);
-        refreshCurrencyUI();
-        msg.textContent = `Deposit of ${amtVal} ${activeCurrency} credited. (Connect Pi Payments + backend server for live funds).`;
-      } else {
-        if (activeCurrency === "Pi") {
-          if (amtInPi < 1) {
-            msg.textContent = "Minimum withdrawal for Pi is 1 Pi.";
-            return;
-          }
-          if (amtInPi > 1000) {
-            msg.textContent = "Maximum withdrawal for Pi is 1,000 Pi.";
-            return;
-          }
-        } else {
-          if (amtInUsd + 1e-9 < 0.5) {
-            msg.textContent = "Minimum withdrawal for fiat currencies is $0.50 (0.5 USD) or equivalent.";
-            return;
-          }
-          if (amtInUsd - 1e-9 > 100000) {
-            msg.textContent = "Maximum withdrawal for fiat currencies is $100,000 (100,000 USD) or equivalent.";
-            return;
-          }
-        }
-
-        if (amtInPi > piBalance + 1e-9) {
-          msg.textContent = "Withdrawal amount cannot exceed current balance.";
+        if (amtVal < 1) {
+          msg.textContent = "Minimum deposit is 1 Pi.";
           return;
         }
-        piBalance = Math.max(0, +(piBalance - amtInPi).toFixed(4));
-        refreshCurrencyUI();
-        msg.textContent = `Withdrawal request of ${amtVal} ${activeCurrency} recorded. (Requires backend verification).`;
+        piBalance = +(piBalance + amtVal).toFixed(4);
+        refreshBalanceUI();
+        msg.textContent = `Deposit of ${amtVal} Pi credited. (Connect Pi Payments + backend server for live Open Mainnet funds).`;
+      } else {
+        if (amtVal < 1) {
+          msg.textContent = "Minimum withdrawal is 1 Pi.";
+          return;
+        }
+        if (amtVal > 1000) {
+          msg.textContent = "Maximum withdrawal is 1,000 Pi.";
+          return;
+        }
+        if (amtVal > piBalance + 1e-9) {
+          msg.textContent = "Withdrawal amount cannot exceed current Pi balance.";
+          return;
+        }
+        piBalance = Math.max(0, +(piBalance - amtVal).toFixed(4));
+        refreshBalanceUI();
+        msg.textContent = `Withdrawal request of ${amtVal} Pi recorded. (Requires backend verification).`;
       }
     }
 
@@ -638,8 +700,8 @@
       console.log("Incomplete payment:", payment);
     }
 
-    populateCurrencyDropdown();
-    refreshCurrencyUI();
+    refreshBalanceUI();
+    updateSlipPreview();
     renderWinpiAd();
 
     document.getElementById("piLoginBtn").addEventListener("click", async function () {
@@ -657,7 +719,7 @@
         document.getElementById("winpiApp").style.display = "block";
         document.getElementById("winpiUserBadge").textContent = currentUser;
         document.getElementById("profileUsername").textContent = currentUser;
-        refreshCurrencyUI();
+        refreshBalanceUI();
         renderMatches("Football");
         showWinpiSection("home");
       } catch (err) {
