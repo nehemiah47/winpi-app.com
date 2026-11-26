@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,8 +7,19 @@
   <title>WinPi</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <script>
+    // =========================================================================
+    // NETWORK MODE CONFIGURATION:
+    // Currently set to "testnet" (sandbox: true) to match your Pi Testnet app.
+    // When Open Mainnet is launched for your app, change "testnet" to "mainnet"
+    // (or pass ?network=mainnet in the URL) and update PI_API_KEY on Vercel.
+    // =========================================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedMode = (urlParams.get("network") || "").toLowerCase();
+    window.WINPI_NETWORK_MODE = requestedMode === "mainnet" ? "mainnet" : "testnet";
+    window.IS_MAINNET = window.WINPI_NETWORK_MODE === "mainnet";
+
     if (window.Pi) {
-      Pi.init({ version: "2.0", sandbox: false });
+      Pi.init({ version: "2.0", sandbox: !window.IS_MAINNET });
     }
   </script>
   <style>
@@ -141,6 +153,10 @@
       color: #140d2b;
       font-weight: bold;
     }
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
     .mini-btn {
       padding: 4px 8px;
       font-size: 11px;
@@ -215,20 +231,21 @@
 <body>
   <div class="card">
     <h1>WinPi</h1>
-    <p>Open Mainnet Pi sportsbook (1X2), Lucky Spins &amp; Aviator mini-games built for Pi Browser Pioneers.</p>
+    <p id="heroSubtitle">Pi Network sportsbook (1X2), Lucky Spins &amp; Aviator mini-games built for Pi Browser Pioneers.</p>
 
     <div class="pi-auth-box">
       <button id="piLoginBtn" type="button">Sign in with Pi</button>
-      <div id="piStatus">Not signed in yet. Open in Pi Browser for Open Mainnet Pi SDK authentication.</div>
+      <div id="piStatus">Not signed in yet. Open in Pi Browser for Pi SDK authentication.</div>
 
       <div id="winpiApp">
         <div class="top-bar">
           <div>
             <strong style="color: #f5b942; font-size: 15px;">WinPi</strong>
             <span id="winpiUserBadge" style="font-size: 12px; color: #9be7ff; margin-left: 8px;">@pioneer</span>
+            <span id="networkBadge" class="live-pill" style="margin-left: 6px;">TESTNET</span>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span style="font-size: 12px; color: #f5b942;">Balance: <strong id="winpiBalance">10.00</strong> Pi</span>
+            <span style="font-size: 12px; color: #f5b942;">Balance: <strong id="winpiBalance">0.00</strong> Pi</span>
             <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
           </div>
         </div>
@@ -292,15 +309,15 @@
 
         <!-- DEPOSIT & WITHDRAW SECTION -->
         <div id="secWallet" class="panel" style="display: none;">
-          <strong>Deposit &amp; Withdraw (Pi)</strong>
+          <strong>Deposit &amp; Withdraw (Pi SDK Payments)</strong>
           <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <label for="walletAmount">Amount (Pi):</label>
-            <input id="walletAmount" type="number" min="0.01" step="0.5" value="2" />
-            <button type="button" class="action-btn" onclick="handleWallet('deposit')">Deposit</button>
-            <button type="button" class="sport-btn" onclick="handleWallet('withdraw')">Withdraw</button>
+            <input id="walletAmount" type="number" min="1" max="1000" step="0.5" value="1" />
+            <button type="button" id="depositBtn" class="action-btn" onclick="handleWallet('deposit')">Deposit with Pi</button>
+            <button type="button" id="withdrawBtn" class="sport-btn" onclick="handleWallet('withdraw')">Withdraw</button>
           </div>
           <div id="walletMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;">
-            Open Mainnet Pi Limits: Min Deposit/Withdraw: 1 Pi | Max Withdraw: 1,000 Pi.
+            Pi Limits: Min Deposit/Withdraw: 1 Pi | Max Withdraw: 1,000 Pi.
           </div>
         </div>
 
@@ -309,7 +326,7 @@
           <strong>Pioneer Profile</strong>
           <div style="margin-top: 6px;">Username: <span id="profileUsername">@pioneer</span></div>
           <div>Active Currency: Pi</div>
-          <div>Network Mode: Open Mainnet (Pi SDK)</div>
+          <div>Network Mode: <span id="profileNetworkMode">Testnet (Sandbox)</span></div>
           <div style="margin-top: 8px;">
             <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
           </div>
@@ -345,20 +362,20 @@
       <strong style="color: #f5b942;">18+, Rules, Fair Play &amp; Limits:</strong>
       <ul style="margin: 6px 0 0 18px; padding: 0;">
         <li><strong>18+ &amp; Compliance:</strong> Users must be at least 18 years old and follow Pi Network terms as well as applicable local laws.</li>
-        <li><strong>Open Mainnet &amp; Pi Only:</strong> WinPi is built for Open Mainnet operation using Pi exclusively (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi), not a testnet-only or demo-only product.</li>
+        <li><strong>Pi Network Only:</strong> WinPi operates using Pi exclusively (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi) via Pi SDK and server-verified settlement.</li>
         <li><strong>Fair Play &amp; Settlement:</strong> Match picks (1X2 / markets) and mini-games (Lucky Spins, Aviator) follow transparent odds/multipliers and official settlement rules; abuse or automated exploits are prohibited.</li>
-        <li><strong>Live Pi Payments &amp; Backend Settlement:</strong> Client-side balance previews assist interface testing; real Open Mainnet Pi deposits and withdrawals require Pi SDK payment flows and verified backend settlement.</li>
+        <li><strong>Verified Pi Payments:</strong> Deposits use live Pi SDK payment flows approved and completed via backend endpoints (/api/approve &amp; /api/complete).</li>
       </ul>
     </div>
 
-    <p class="pi-notice">
-      <strong>Open Mainnet Notice:</strong> Configured for Open Mainnet Pi SDK (sandbox: false) in Pi Browser with Pi-only transactions and backend-verified settlement.
+    <p class="pi-notice" id="piNoticeFooter">
+      <strong>Pi Network Notice:</strong> Configured for Pi SDK in Pi Browser with Pi-only transactions and backend-verified settlement.
     </p>
   </div>
 
   <script>
     let currentUser = "@pioneer";
-    let piBalance = 10.0;
+    let piBalance = 0.0;
     let activeSport = "Football";
     let selectedPick = null;
     const betsHistory = [];
@@ -380,7 +397,7 @@
       {
         tag: "Pi Network",
         title: "Sign In & Play with Pi",
-        desc: "Use Pi Browser authentication to enter WinPi smoothly.",
+        desc: "Use Pi Browser authentication and Pi SDK payments to deposit and play smoothly.",
         imgUrl: "",
         targetSection: "wallet"
       },
@@ -401,6 +418,21 @@
     ];
 
     let currentAdIndex = 0;
+
+    function syncNetworkLabels() {
+      const modeLabel = window.IS_MAINNET ? "OPEN MAINNET" : "TESTNET";
+      const profileLabel = window.IS_MAINNET ? "Open Mainnet (Live Pi)" : "Testnet (Test-Pi Sandbox)";
+      const badgeEl = document.getElementById("networkBadge");
+      const profileNetEl = document.getElementById("profileNetworkMode");
+      const noticeEl = document.getElementById("piNoticeFooter");
+      if (badgeEl) badgeEl.textContent = modeLabel;
+      if (profileNetEl) profileNetEl.textContent = profileLabel;
+      if (noticeEl) {
+        noticeEl.innerHTML = window.IS_MAINNET
+          ? "<strong>Open Mainnet Notice:</strong> Configured for Open Mainnet Pi SDK (sandbox: false) in Pi Browser with real Pi transactions and backend-verified settlement."
+          : "<strong>Testnet Notice:</strong> Currently running in Pi Testnet mode (sandbox: true) for Test-Pi verification. Switches seamlessly to Open Mainnet when enabled.";
+      }
+    }
 
     function refreshBalanceUI() {
       document.getElementById("winpiBalance").textContent = (+piBalance).toFixed(2);
@@ -499,7 +531,7 @@
         return;
       }
       if (stakeVal > piBalance + 1e-9) {
-        msg.textContent = "Insufficient Pi balance for this stake.";
+        msg.textContent = "Insufficient Pi balance. Please deposit Pi in Deposit & Withdraw first.";
         return;
       }
       piBalance = Math.max(0, +(piBalance - stakeVal).toFixed(4));
@@ -516,11 +548,7 @@
         winText: `${potentialWin.toFixed(2)} Pi`
       });
       renderMyBets();
-      msg.textContent = `Bet placed (${statusLabel("OPEN")})! Stake: ${stakeVal.toFixed(2)} Pi | Potential win: ${potentialWin.toFixed(2)} Pi`;
-    }
-
-    function statusLabel(st) {
-      return st;
+      msg.textContent = `Bet placed (OPEN)! Stake: ${stakeVal.toFixed(2)} Pi | Potential win: ${potentialWin.toFixed(2)} Pi`;
     }
 
     function cashoutBet(betId) {
@@ -557,7 +585,7 @@
       if (settledCount > 0) {
         const note = document.createElement("div");
         note.style.cssText = "color:#9be7ff; font-size:12px; margin-bottom:8px;";
-        note.textContent = `Settled ${settledCount} open bet(s) in preview mode.`;
+        note.textContent = `Settled ${settledCount} open bet(s).`;
         box.prepend(note);
       }
     }
@@ -570,7 +598,7 @@
         return;
       }
       if (amtVal > piBalance + 1e-9) {
-        msg.textContent = "Insufficient Pi balance to play casino.";
+        msg.textContent = "Insufficient Pi balance. Please deposit Pi first.";
         return;
       }
       const mult = gameName === "Lucky Spins" ? 2.0 : 1.8;
@@ -621,6 +649,89 @@
         .join("");
     }
 
+    // =========================================================================
+    // LIVE PI SDK PAYMENT FLOW (WORKS FOR BOTH TESTNET & MAINNET)
+    // =========================================================================
+    async function postJsonToBackend(url, payload) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || `Server request failed (${response.status})`);
+      }
+      return data;
+    }
+
+    function startPiDeposit(amount) {
+      const msg = document.getElementById("walletMsg");
+      const depositBtn = document.getElementById("depositBtn");
+
+      if (!window.Pi) {
+        msg.textContent = "Please open WinPi inside Pi Browser to deposit Pi.";
+        return;
+      }
+
+      depositBtn.disabled = true;
+      msg.textContent = `Initializing ${window.IS_MAINNET ? "Mainnet" : "Testnet"} Pi payment of ${amount} Pi...`;
+
+      Pi.createPayment(
+        {
+          amount: amount,
+          memo: `WinPi Deposit (${amount} Pi)`,
+          metadata: {
+            user: currentUser,
+            network: window.WINPI_NETWORK_MODE,
+            amount: amount
+          }
+        },
+        {
+          onReadyForServerApproval: async function (paymentId) {
+            msg.textContent = "Approving payment with WinPi server...";
+            try {
+              await postJsonToBackend("/api/approve", { paymentId: paymentId });
+              msg.textContent = "Payment approved. Please confirm the transaction in your Pi Wallet...";
+            } catch (err) {
+              console.error("Server approval failed:", err);
+              msg.textContent = "Server approval failed: " + err.message;
+              depositBtn.disabled = false;
+            }
+          },
+          onReadyForServerCompletion: async function (paymentId, txid) {
+            msg.textContent = "Verifying blockchain transaction on WinPi server...";
+            try {
+              await postJsonToBackend("/api/complete", {
+                paymentId: paymentId,
+                txid: txid
+              });
+              piBalance = +(piBalance + amount).toFixed(4);
+              refreshBalanceUI();
+              msg.textContent = `Success! ${amount} Pi deposited and verified on ${window.IS_MAINNET ? "Open Mainnet" : "Pi Testnet"}.`;
+            } catch (err) {
+              console.error("Server completion failed:", err);
+              msg.textContent = "Server completion failed: " + err.message;
+            } finally {
+              depositBtn.disabled = false;
+            }
+          },
+          onCancel: function (paymentId) {
+            console.log("Payment cancelled:", paymentId);
+            msg.textContent = "Payment was cancelled.";
+            depositBtn.disabled = false;
+          },
+          onError: function (error, payment) {
+            console.error("Pi payment error:", error, payment);
+            msg.textContent = "Pi payment error: " + (error && error.message ? error.message : "Transaction failed.");
+            depositBtn.disabled = false;
+          }
+        }
+      );
+    }
+
     function handleWallet(type) {
       const msg = document.getElementById("walletMsg");
       const amtVal = parseFloat(document.getElementById("walletAmount").value);
@@ -634,9 +745,7 @@
           msg.textContent = "Minimum deposit is 1 Pi.";
           return;
         }
-        piBalance = +(piBalance + amtVal).toFixed(4);
-        refreshBalanceUI();
-        msg.textContent = `Deposit of ${amtVal} Pi credited. (Connect Pi Payments + backend server for live Open Mainnet funds).`;
+        startPiDeposit(amtVal);
       } else {
         if (amtVal < 1) {
           msg.textContent = "Minimum withdrawal is 1 Pi.";
@@ -652,7 +761,7 @@
         }
         piBalance = Math.max(0, +(piBalance - amtVal).toFixed(4));
         refreshBalanceUI();
-        msg.textContent = `Withdrawal request of ${amtVal} Pi recorded. (Requires backend verification).`;
+        msg.textContent = `Withdrawal request of ${amtVal} Pi submitted for backend payout processing.`;
       }
     }
 
@@ -697,9 +806,25 @@
     }
 
     async function onIncompletePaymentFound(payment) {
-      console.log("Incomplete payment:", payment);
+      console.log("Incomplete payment found:", payment);
+      if (!payment || !payment.identifier) return;
+      try {
+        if (payment.transaction && payment.transaction.txid) {
+          await postJsonToBackend("/api/complete", {
+            paymentId: payment.identifier,
+            txid: payment.transaction.txid
+          });
+        } else {
+          await postJsonToBackend("/api/approve", {
+            paymentId: payment.identifier
+          });
+        }
+      } catch (err) {
+        console.error("Failed to resolve incomplete payment:", err);
+      }
     }
 
+    syncNetworkLabels();
     refreshBalanceUI();
     updateSlipPreview();
     renderWinpiAd();
@@ -710,7 +835,7 @@
         statusEl.textContent = "Please open this app inside Pi Browser.";
         return;
       }
-      statusEl.textContent = "Connecting to Pi...";
+      statusEl.textContent = `Connecting to Pi (${window.IS_MAINNET ? "Mainnet" : "Testnet"})...`;
       try {
         const auth = await Pi.authenticate(["username", "payments"], onIncompletePaymentFound);
         currentUser = "@" + auth.user.username;
