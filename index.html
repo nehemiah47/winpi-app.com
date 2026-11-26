@@ -3,38 +3,186 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WinPi</title><script src="https://sdk.minepi.com/pi-sdk.js"></script>
-<script>
-  if (window.Pi) {
-    Pi.init({ version: "2.0", sandbox: false });
-  }
-</script>
-
+  <title>WinPi</title>
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+  <script>
+    if (window.Pi) {
+      Pi.init({ version: "2.0", sandbox: false });
+    }
+  </script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #140d2b;
       color: #ffffff;
       text-align: center;
-      padding: 36px 18px;
+      padding: 26px 14px;
       margin: 0;
     }
     .card {
-      max-width: 680px;
+      max-width: 740px;
       margin: 0 auto;
       background: #221647;
-      padding: 28px;
+      padding: 24px;
       border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
     }
     h1 {
       margin-top: 0;
       color: #f5b942;
     }
+    .pi-auth-box {
+      margin: 16px auto 8px;
+      padding: 16px;
+      background: #140d2b;
+      border: 1px solid rgba(245, 185, 66, 0.35);
+      border-radius: 12px;
+      max-width: 620px;
+    }
+    #piLoginBtn {
+      background: linear-gradient(135deg, #f5b942, #ffcf66);
+      color: #140d2b;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    #piStatus {
+      margin-top: 10px;
+      color: #9be7ff;
+      font-size: 14px;
+    }
+    #winpiApp {
+      display: none;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(245, 185, 66, 0.25);
+      text-align: left;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .nav-tabs, .sport-tabs, .odds-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .nav-btn, .sport-btn, .odd-btn, .action-btn {
+      background: #2c1d5c;
+      color: #ffffff;
+      border: 1px solid rgba(245, 185, 66, 0.3);
+      padding: 7px 11px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .nav-btn.active {
+      background: #f5b942;
+      color: #140d2b;
+      font-weight: bold;
+    }
+    .panel {
+      background: #221647;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #e6defc;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .match-card {
+      background: #140d2b;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .odd-btn {
+      flex: 1;
+      min-width: 75px;
+      text-align: center;
+    }
+    .action-btn {
+      background: #f5b942;
+      color: #140d2b;
+      font-weight: bold;
+    }
+    .logout-btn {
+      background: #4a1c2f;
+      color: #ffd6e0;
+      border: 1px solid rgba(255, 120, 150, 0.4);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    #winpiAdsBanner {
+      margin: 14px auto 8px;
+      padding: 14px;
+      background: #140d2b;
+      border: 1px solid rgba(245, 185, 66, 0.3);
+      border-radius: 12px;
+      max-width: 620px;
+      text-align: left;
+    }
+    .ad-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    #adSlideCard {
+      background: linear-gradient(135deg, #2c1d5c, #191038);
+      border: 1px solid rgba(245, 185, 66, 0.25);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .ad-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .rules-box {
+      margin: 14px auto 8px;
+      padding: 12px;
+      background: #140d2b;
+      border: 1px solid rgba(245, 185, 66, 0.25);
+      border-radius: 10px;
+      max-width: 620px;
+      font-size: 12px;
+      color: #d8cff0;
+      line-height: 1.55;
+      text-align: left;
+    }
+    input[type="number"], select {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(245, 185, 66, 0.4);
+      background: #140d2b;
+      color: #ffffff;
+      font-size: 13px;
+    }
+    input[type="number"] {
+      width: 110px;
+    }
     .currencies {
       line-height: 1.75;
       font-size: 15px;
       color: #e6defc;
-      margin-top: 14px;
+      margin-top: 18px;
     }
   </style>
 </head>
@@ -42,6 +190,135 @@
   <div class="card">
     <h1>WinPi</h1>
     <p>Global football leagues, Lucky Spins &amp; Aviator mini-games.</p>
+
+    <div class="pi-auth-box">
+      <button id="piLoginBtn" type="button">Sign in with Pi</button>
+      <div id="piStatus">Not signed in yet.</div>
+
+      <div id="winpiApp">
+        <div class="top-bar">
+          <div>
+            <strong style="color: #f5b942; font-size: 15px;">WinPi</strong>
+            <span id="winpiUserBadge" style="font-size: 12px; color: #9be7ff; margin-left: 8px;">@pioneer</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <label for="currencySelect" style="font-size: 12px; color: #e6defc;">Currency:</label>
+            <select id="currencySelect" onchange="changeCurrency()"></select>
+            <span style="font-size: 12px; color: #f5b942;">Balance: <strong id="winpiBalance">10.00</strong> <span id="winpiCurrLabel">Pi</span></span>
+            <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
+          </div>
+        </div>
+
+        <div class="nav-tabs">
+          <button type="button" id="tabHome" class="nav-btn active" onclick="showWinpiSection('home')">Home &amp; Bet</button>
+          <button type="button" id="tabCasino" class="nav-btn" onclick="showWinpiSection('casino')">Casino</button>
+          <button type="button" id="tabBets" class="nav-btn" onclick="showWinpiSection('bets')">My Bets</button>
+          <button type="button" id="tabWallet" class="nav-btn" onclick="showWinpiSection('wallet')">Deposit &amp; Withdraw</button>
+          <button type="button" id="tabProfile" class="nav-btn" onclick="showWinpiSection('profile')">Profile</button>
+        </div>
+
+        <!-- HOME & BET SECTION -->
+        <div id="secHome" class="panel">
+          <div class="sport-tabs">
+            <button type="button" class="sport-btn" onclick="renderMatches('Football')">Football</button>
+            <button type="button" class="sport-btn" onclick="renderMatches('Basketball')">Basketball</button>
+            <button type="button" class="sport-btn" onclick="renderMatches('Tennis')">Tennis</button>
+          </div>
+
+          <div id="winpiMatchesList"></div>
+
+          <div class="match-card" style="margin-top: 10px;">
+            <div><strong>Selected Slip:</strong> <span id="slipSelection">None selected</span></div>
+            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <label for="stakeInput">Stake (<span class="curr-unit">Pi</span>):</label>
+              <input id="stakeInput" type="number" min="0.01" step="0.1" value="1" />
+              <button type="button" class="action-btn" onclick="placeDemoBet()">Place Bet</button>
+            </div>
+            <div id="slipMsg" style="margin-top: 6px; color: #9be7ff; font-size: 12px;"></div>
+          </div>
+        </div>
+
+        <!-- CASINO SECTION -->
+        <div id="secCasino" class="panel" style="display: none;">
+          <strong>WinPi Casino (Lucky Spins &amp; Aviator)</strong>
+          <div class="match-card" style="margin-top: 8px;">
+            <div>Play Lucky Spins or Aviator multiplier round using <strong class="curr-unit">Pi</strong>.</div>
+            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <label for="casinoStake">Amount (<span class="curr-unit">Pi</span>):</label>
+              <input id="casinoStake" type="number" min="0.01" step="0.1" value="1" />
+              <button type="button" class="action-btn" onclick="playCasino('Lucky Spins')">Spin Wheel (2x)</button>
+              <button type="button" class="sport-btn" onclick="playCasino('Aviator')">Aviator Cashout (1.8x)</button>
+            </div>
+            <div id="casinoMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;"></div>
+          </div>
+        </div>
+
+        <!-- MY BETS SECTION -->
+        <div id="secBets" class="panel" style="display: none;">
+          <strong>My Bets &amp; Casino History</strong>
+          <div id="myBetsList" style="margin-top: 8px;">No bets placed yet.</div>
+        </div>
+
+        <!-- DEPOSIT & WITHDRAW SECTION -->
+        <div id="secWallet" class="panel" style="display: none;">
+          <strong>Deposit &amp; Withdraw (<span class="curr-unit">Pi</span>)</strong>
+          <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <label for="walletAmount">Amount (<span class="curr-unit">Pi</span>):</label>
+            <input id="walletAmount" type="number" min="0.01" step="0.5" value="2" />
+            <button type="button" class="action-btn" onclick="handleWallet('deposit')">Deposit</button>
+            <button type="button" class="sport-btn" onclick="handleWallet('withdraw')">Withdraw</button>
+          </div>
+          <div id="walletMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;">
+            Limits: Pi (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi) | Fiat (Min Deposit/Withdraw: $0.50, Max Withdraw: $100,000).
+          </div>
+        </div>
+
+        <!-- PROFILE SECTION -->
+        <div id="secProfile" class="panel" style="display: none;">
+          <strong>Pioneer Profile</strong>
+          <div style="margin-top: 6px;">Username: <span id="profileUsername">@pioneer</span></div>
+          <div>Active Currency: <span id="profileCurrency">Pi</span></div>
+          <div>Status: Authenticated via Pi SDK</div>
+          <div style="margin-top: 8px;">
+            <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE ADS BANNER (PI NETWORK, CASINO, FOOTBALL — NO VIDEOS) -->
+    <div id="winpiAdsBanner">
+      <div class="ad-header">
+        <strong style="color: #f5b942; font-size: 13px;">Featured Promo Banners (Images Only)</strong>
+        <span id="adCounter" style="font-size: 11px; color: #9be7ff;">1 / 3</span>
+      </div>
+
+      <div id="adSlideCard">
+        <div id="adCategoryTag" style="font-size: 11px; color: #f5b942; font-weight: bold; text-transform: uppercase;">Pi Network</div>
+        <div id="adTitle" style="font-size: 16px; font-weight: bold; color: #ffffff; margin-top: 4px;">Sign In &amp; Play with Pi</div>
+        <div id="adDesc" style="font-size: 12px; color: #e6defc; margin-top: 4px; line-height: 1.5;">
+          Connect your Pi Browser account and explore WinPi sports &amp; mini-games.
+        </div>
+        <img id="adImageEl" src="" alt="WinPi Promo Banner" style="display: none; width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; margin-top: 10px;" />
+      </div>
+
+      <div class="ad-controls">
+        <button type="button" class="sport-btn" onclick="prevWinpiAd()">Prev</button>
+        <button type="button" class="action-btn" onclick="openWinpiAdTarget()">Explore</button>
+        <button type="button" class="sport-btn" onclick="nextWinpiAd()">Next</button>
+      </div>
+    </div>
+
+    <!-- 18+, RULES & LIMITS -->
+    <div class="rules-box">
+      <strong style="color: #f5b942;">18+, Rules &amp; Limits:</strong>
+      <ul style="margin: 6px 0 0 18px; padding: 0;">
+        <li><strong>18+ Only:</strong> Users must be at least 18 years old and comply with applicable local laws and regulations.</li>
+        <li><strong>Match &amp; Game Rules:</strong> Events and mini-games are settled according to official match rules and game terms across Football, Basketball, Tennis, Lucky Spins, and Aviator.</li>
+        <li><strong>Limits &amp; Responsible Play:</strong> Pi limits (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi) | Fiat limits (Min Deposit/Withdraw: $0.50, Max Withdraw: $100,000 or equivalent). Set personal limits and play responsibly.</li>
+      </ul>
+    </div>
+
     <p class="currencies">
       <strong>Supported currencies (Global Pioneers):</strong>
       Pi, USD, EUR, GBP, BIF, CDF, ZMW, NGN, ZAR, MZN, EGP, SAR,
@@ -50,5 +327,343 @@
       CAD, MXN, BRL, ARS, CLP, COP, PEN, AUD, NZD &amp; more.
     </p>
   </div>
+
+  <script>
+    const orderedCurrencies = [
+      "Pi", "USD", "EUR", "GBP", "BIF", "CDF", "ZMW", "NGN", "ZAR", "MZN", "EGP", "SAR",
+      "TZS", "UGX", "KES", "RWF", "GHS", "ETB", "MAD", "XOF", "XAF", "AOA", "BWP", "NAD", "MWK", "SLL", "GMD",
+      "AED", "QAR", "KWD", "BHD", "OMR", "JOD", "TRY", "INR", "PKR", "BDT", "IDR", "MYR", "PHP", "THB", "VND", "KRW", "JPY", "CNY",
+      "CAD", "MXN", "BRL", "ARS", "CLP", "COP", "PEN", "AUD", "NZD"
+    ];
+
+    const rateFromPi = {
+      Pi: 1, USD: 1, EUR: 0.92, GBP: 0.79, BIF: 2900, CDF: 2800, ZMW: 27, NGN: 1600,
+      ZAR: 18.2, MZN: 63.8, EGP: 49, SAR: 3.75, TZS: 2700, UGX: 3700, KES: 129, RWF: 1350,
+      GHS: 15.5, ETB: 120, MAD: 10, XOF: 605, XAF: 605, AOA: 910, BWP: 13.6, NAD: 18.2,
+      MWK: 1730, SLL: 22, GMD: 70, AED: 3.67, QAR: 3.64, KWD: 0.31, BHD: 0.38, OMR: 0.38,
+      JOD: 0.71, TRY: 34.5, INR: 84, PKR: 278, BDT: 119, IDR: 15800, MYR: 4.4, PHP: 58.5,
+      THB: 34.5, VND: 25400, KRW: 1390, JPY: 154, CNY: 7.2, CAD: 1.39, MXN: 20.2, BRL: 5.8,
+      ARS: 1000, CLP: 970, COP: 4400, PEN: 3.75, AUD: 1.53, NZD: 1.69
+    };
+
+    let currentUser = "@pioneer";
+    let piBalance = 10.0;
+    let activeCurrency = "Pi";
+    let selectedPick = null;
+    const betsHistory = [];
+
+    const fixturesBySport = {
+      Football: [
+        { match: "Yanga SC vs Mamelodi Sundowns", o1: 2.40, ox: 3.10, o2: 2.85 },
+        { match: "Real Madrid vs AS Roma", o1: 1.65, ox: 3.80, o2: 4.90 }
+      ],
+      Basketball: [
+        { match: "Court Kings vs Metro Hawks", o1: 1.75, ox: 12.0, o2: 2.05 }
+      ],
+      Tennis: [
+        { match: "Player A vs Player B", o1: 1.58, ox: 1.0, o2: 2.35 }
+      ]
+    };
+
+    const winpiPromoAds = [
+      {
+        tag: "Pi Network",
+        title: "Sign In & Play with Pi",
+        desc: "Use Pi Browser authentication to enter WinPi smoothly.",
+        imgUrl: "",
+        targetSection: "wallet"
+      },
+      {
+        tag: "Casino",
+        title: "Lucky Spins & Aviator Arena",
+        desc: "Try Lucky Spins wheel and Aviator multiplier rounds inside WinPi.",
+        imgUrl: "",
+        targetSection: "casino"
+      },
+      {
+        tag: "Football",
+        title: "Global Football Leagues (1X2)",
+        desc: "Pick 1, X, or 2 on featured football fixtures and track your slip.",
+        imgUrl: "",
+        targetSection: "home"
+      }
+    ];
+
+    let currentAdIndex = 0;
+
+    function populateCurrencyDropdown() {
+      const sel = document.getElementById("currencySelect");
+      sel.innerHTML = orderedCurrencies
+        .map((c) => `<option value="${c}">${c}</option>`)
+        .join("");
+      sel.value = activeCurrency;
+    }
+
+    function toSelectedCurrency(amountInPi) {
+      const rate = rateFromPi[activeCurrency] || 1;
+      return +(amountInPi * rate).toFixed(2);
+    }
+
+    function toPi(amountInSelected) {
+      const rate = rateFromPi[activeCurrency] || 1;
+      return amountInSelected / rate;
+    }
+
+    function refreshCurrencyUI() {
+      document.getElementById("winpiCurrLabel").textContent = activeCurrency;
+      document.getElementById("profileCurrency").textContent = activeCurrency;
+      document.getElementById("winpiBalance").textContent = toSelectedCurrency(piBalance).toFixed(2);
+      document.querySelectorAll(".curr-unit").forEach((el) => {
+        el.textContent = activeCurrency;
+      });
+    }
+
+    function changeCurrency() {
+      activeCurrency = document.getElementById("currencySelect").value;
+      refreshCurrencyUI();
+    }
+
+    function showWinpiSection(section) {
+      const map = {
+        home: "secHome",
+        casino: "secCasino",
+        bets: "secBets",
+        wallet: "secWallet",
+        profile: "secProfile"
+      };
+      const tabMap = {
+        home: "tabHome",
+        casino: "tabCasino",
+        bets: "tabBets",
+        wallet: "tabWallet",
+        profile: "tabProfile"
+      };
+      Object.keys(map).forEach((key) => {
+        document.getElementById(map[key]).style.display = key === section ? "block" : "none";
+        document.getElementById(tabMap[key]).classList.toggle("active", key === section);
+      });
+    }
+
+    function renderMatches(sport) {
+      const container = document.getElementById("winpiMatchesList");
+      const list = fixturesBySport[sport] || fixturesBySport.Football;
+      container.innerHTML = list
+        .map(
+          (item) => `
+          <div class="match-card">
+            <div style="margin-bottom: 6px;"><strong>${item.match}</strong> <span style="color:#9be7ff; font-size:11px;">(${sport})</span></div>
+            <div class="odds-row" style="margin-bottom: 0;">
+              <button type="button" class="odd-btn" onclick="pickOdd('${item.match}', '1', ${item.o1})">1 (${item.o1})</button>
+              <button type="button" class="odd-btn" onclick="pickOdd('${item.match}', 'X', ${item.ox})">X (${item.ox})</button>
+              <button type="button" class="odd-btn" onclick="pickOdd('${item.match}', '2', ${item.o2})">2 (${item.o2})</button>
+            </div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function pickOdd(match, market, odd) {
+      selectedPick = { match, market, odd };
+      document.getElementById("slipSelection").textContent = `${match} — Pick ${market} @ ${odd}`;
+      document.getElementById("slipMsg").textContent = "";
+    }
+
+    function placeDemoBet() {
+      const msg = document.getElementById("slipMsg");
+      const stakeInputVal = parseFloat(document.getElementById("stakeInput").value);
+      if (!selectedPick) {
+        msg.textContent = "Please select 1, X, or 2 on a match first.";
+        return;
+      }
+      if (isNaN(stakeInputVal) || stakeInputVal <= 0) {
+        msg.textContent = "Please enter a valid stake amount.";
+        return;
+      }
+      const stakeInPi = toPi(stakeInputVal);
+      if (stakeInPi > piBalance + 1e-9) {
+        msg.textContent = "Insufficient balance for this stake.";
+        return;
+      }
+      piBalance = Math.max(0, +(piBalance - stakeInPi).toFixed(4));
+      refreshCurrencyUI();
+      const potentialWinCurr = +(stakeInputVal * selectedPick.odd).toFixed(2);
+      betsHistory.unshift({
+        match: `${selectedPick.match} (Pick ${selectedPick.market} @ ${selectedPick.odd})`,
+        stakeText: `${stakeInputVal} ${activeCurrency}`,
+        winText: `${potentialWinCurr} ${activeCurrency}`
+      });
+      renderMyBets();
+      msg.textContent = `Bet placed! Stake: ${stakeInputVal} ${activeCurrency} | Potential win: ${potentialWinCurr} ${activeCurrency}`;
+    }
+
+    function playCasino(gameName) {
+      const msg = document.getElementById("casinoMsg");
+      const amtVal = parseFloat(document.getElementById("casinoStake").value);
+      if (isNaN(amtVal) || amtVal <= 0) {
+        msg.textContent = "Please enter a valid amount.";
+        return;
+      }
+      const amtInPi = toPi(amtVal);
+      if (amtInPi > piBalance + 1e-9) {
+        msg.textContent = "Insufficient balance to play casino.";
+        return;
+      }
+      const mult = gameName === "Lucky Spins" ? 2.0 : 1.8;
+      piBalance = Math.max(0, +(piBalance - amtInPi).toFixed(4));
+      const winCurr = +(amtVal * mult).toFixed(2);
+      refreshCurrencyUI();
+      betsHistory.unshift({
+        match: `Casino: ${gameName} (${mult}x)`,
+        stakeText: `${amtVal} ${activeCurrency}`,
+        winText: `${winCurr} ${activeCurrency}`
+      });
+      renderMyBets();
+      msg.textContent = `${gameName} round started — Stake: ${amtVal} ${activeCurrency} | Target payout: ${winCurr} ${activeCurrency}`;
+    }
+
+    function renderMyBets() {
+      const box = document.getElementById("myBetsList");
+      if (!betsHistory.length) {
+        box.textContent = "No bets placed yet.";
+        return;
+      }
+      box.innerHTML = betsHistory
+        .map(
+          (b) => `<div class="match-card"><strong>${b.match}</strong><br>Stake: ${b.stakeText} | Potential / Target: <strong>${b.winText}</strong></div>`
+        )
+        .join("");
+    }
+
+    function handleWallet(type) {
+      const msg = document.getElementById("walletMsg");
+      const amtVal = parseFloat(document.getElementById("walletAmount").value);
+      if (isNaN(amtVal) || amtVal <= 0) {
+        msg.textContent = "Please enter a valid amount.";
+        return;
+      }
+
+      const usdRate = rateFromPi["USD"] || 1;
+      const amtInPi = toPi(amtVal);
+      const amtInUsd = amtInPi * usdRate;
+
+      if (type === "deposit") {
+        if (activeCurrency === "Pi") {
+          if (amtInPi < 1) {
+            msg.textContent = "Minimum deposit for Pi is 1 Pi.";
+            return;
+          }
+        } else {
+          if (amtInUsd + 1e-9 < 0.5) {
+            msg.textContent = "Minimum deposit for fiat currencies is $0.50 (0.5 USD) or equivalent.";
+            return;
+          }
+        }
+
+        piBalance = +(piBalance + amtInPi).toFixed(4);
+        refreshCurrencyUI();
+        msg.textContent = `Deposit of ${amtVal} ${activeCurrency} credited. (Connect Pi Payments + backend server for live funds).`;
+      } else {
+        if (activeCurrency === "Pi") {
+          if (amtInPi < 1) {
+            msg.textContent = "Minimum withdrawal for Pi is 1 Pi.";
+            return;
+          }
+          if (amtInPi > 1000) {
+            msg.textContent = "Maximum withdrawal for Pi is 1,000 Pi.";
+            return;
+          }
+        } else {
+          if (amtInUsd + 1e-9 < 0.5) {
+            msg.textContent = "Minimum withdrawal for fiat currencies is $0.50 (0.5 USD) or equivalent.";
+            return;
+          }
+          if (amtInUsd - 1e-9 > 100000) {
+            msg.textContent = "Maximum withdrawal for fiat currencies is $100,000 (100,000 USD) or equivalent.";
+            return;
+          }
+        }
+
+        if (amtInPi > piBalance + 1e-9) {
+          msg.textContent = "Withdrawal amount cannot exceed current balance.";
+          return;
+        }
+        piBalance = Math.max(0, +(piBalance - amtInPi).toFixed(4));
+        refreshCurrencyUI();
+        msg.textContent = `Withdrawal request of ${amtVal} ${activeCurrency} recorded. (Requires backend verification).`;
+      }
+    }
+
+    function renderWinpiAd() {
+      const ad = winpiPromoAds[currentAdIndex];
+      document.getElementById("adCounter").textContent = (currentAdIndex + 1) + " / " + winpiPromoAds.length;
+      document.getElementById("adCategoryTag").textContent = ad.tag;
+      document.getElementById("adTitle").textContent = ad.title;
+      document.getElementById("adDesc").textContent = ad.desc;
+
+      const imgEl = document.getElementById("adImageEl");
+      if (ad.imgUrl && ad.imgUrl.trim() !== "") {
+        imgEl.src = ad.imgUrl.trim();
+        imgEl.style.display = "block";
+      } else {
+        imgEl.removeAttribute("src");
+        imgEl.style.display = "none";
+      }
+    }
+
+    function nextWinpiAd() {
+      currentAdIndex = (currentAdIndex + 1) % winpiPromoAds.length;
+      renderWinpiAd();
+    }
+
+    function prevWinpiAd() {
+      currentAdIndex = (currentAdIndex - 1 + winpiPromoAds.length) % winpiPromoAds.length;
+      renderWinpiAd();
+    }
+
+    function openWinpiAdTarget() {
+      const ad = winpiPromoAds[currentAdIndex];
+      if (typeof showWinpiSection === "function" && ad.targetSection) {
+        showWinpiSection(ad.targetSection);
+      }
+    }
+
+    function logoutWinpi() {
+      document.getElementById("winpiApp").style.display = "none";
+      document.getElementById("piLoginBtn").style.display = "block";
+      document.getElementById("piStatus").textContent = "Signed out. Click Sign in with Pi to continue.";
+    }
+
+    async function onIncompletePaymentFound(payment) {
+      console.log("Incomplete payment:", payment);
+    }
+
+    populateCurrencyDropdown();
+    refreshCurrencyUI();
+    renderWinpiAd();
+
+    document.getElementById("piLoginBtn").addEventListener("click", async function () {
+      const statusEl = document.getElementById("piStatus");
+      if (!window.Pi) {
+        statusEl.textContent = "Please open this app inside Pi Browser.";
+        return;
+      }
+      statusEl.textContent = "Connecting to Pi...";
+      try {
+        const auth = await Pi.authenticate(["username", "payments"], onIncompletePaymentFound);
+        currentUser = "@" + auth.user.username;
+        statusEl.textContent = "Welcome, " + currentUser + "!";
+        document.getElementById("piLoginBtn").style.display = "none";
+        document.getElementById("winpiApp").style.display = "block";
+        document.getElementById("winpiUserBadge").textContent = currentUser;
+        document.getElementById("profileUsername").textContent = currentUser;
+        refreshCurrencyUI();
+        renderMatches("Football");
+        showWinpiSection("home");
+      } catch (err) {
+        statusEl.textContent = "Sign in cancelled or failed.";
+      }
+    });
+  </script>
 </body>
 </html>
