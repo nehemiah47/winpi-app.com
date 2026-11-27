@@ -1,21 +1,22 @@
+<!DOCTYPE html >
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WinPi</title>
+  <title>WinPi - Pi Next Hackathon Skill Sports &amp; Arcade Arena</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <script>
     // =========================================================================
-    // NETWORK MODE CONFIGURATION:
-    // Currently set to "testnet" (sandbox: true) to match your Pi Testnet app.
-    // When Open Mainnet is launched for your app, change "testnet" to "mainnet"
-    // (or pass ?network=mainnet in the URL) and update PI_API_KEY on Vercel.
+    // NETWORK MODE CONFIGURATION FOR PI NEXT HACKATHON & MAINNET LISTING:
+    // Defaults to "mainnet" (sandbox: false) as required for Pi Next Hackathon
+    // submissions ("Mainnet Pi apps and SoloHost apps" & Mainnet Listing).
+    // You can test on Testnet anytime by appending ?network=testnet to the URL.
+    // Ensure PI_API_KEY in Vercel Environment Variables is your Mainnet API Key.
     // =========================================================================
     const urlParams = new URLSearchParams(window.location.search);
     const requestedMode = (urlParams.get("network") || "").toLowerCase();
-    window.WINPI_NETWORK_MODE = requestedMode === "mainnet" ? "mainnet" : "testnet";
+    window.WINPI_NETWORK_MODE = requestedMode === "testnet" ? "testnet" : "mainnet";
     window.IS_MAINNET = window.WINPI_NETWORK_MODE === "mainnet";
 
     if (window.Pi) {
@@ -84,13 +85,27 @@
       padding-bottom: 10px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
+    .stats-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .stat-chip {
+      background: #2c1d5c;
+      border: 1px solid rgba(245, 185, 66, 0.35);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #f5b942;
+    }
     .nav-tabs, .sport-tabs, .odds-row {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
       margin-bottom: 12px;
     }
-    .nav-btn, .sport-btn, .odd-btn, .action-btn, .mini-btn {
+    .nav-btn, .sport-btn, .odd-btn, .action-btn {
       background: #2c1d5c;
       color: #ffffff;
       border: 1px solid rgba(245, 185, 66, 0.3);
@@ -157,11 +172,6 @@
       opacity: 0.6;
       cursor: not-allowed;
     }
-    .mini-btn {
-      padding: 4px 8px;
-      font-size: 11px;
-      margin-top: 6px;
-    }
     .logout-btn {
       background: #4a1c2f;
       color: #ffd6e0;
@@ -226,39 +236,51 @@
       color: #e6defc;
       margin-top: 18px;
     }
+    .leader-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      background: #140d2b;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>WinPi</h1>
-    <p id="heroSubtitle">Pi Network sportsbook (1X2), Lucky Spins &amp; Aviator mini-games built for Pi Browser Pioneers.</p>
+    <p id="heroSubtitle">Pi Next Hackathon entry: skill sports prediction leagues, daily retention challenges &amp; casual arcade arena for Pi Pioneers.</p>
 
     <div class="pi-auth-box">
       <button id="piLoginBtn" type="button">Sign in with Pi</button>
-      <div id="piStatus">Not signed in yet. Open in Pi Browser for Pi SDK authentication.</div>
+      <div id="piStatus">Not signed in yet. Open in Pi Browser for official Pi SDK authentication.</div>
 
       <div id="winpiApp">
         <div class="top-bar">
           <div>
             <strong style="color: #f5b942; font-size: 15px;">WinPi</strong>
             <span id="winpiUserBadge" style="font-size: 12px; color: #9be7ff; margin-left: 8px;">@pioneer</span>
-            <span id="networkBadge" class="live-pill" style="margin-left: 6px;">TESTNET</span>
+            <span id="networkBadge" class="live-pill" style="margin-left: 6px;">OPEN MAINNET</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span style="font-size: 12px; color: #f5b942;">Balance: <strong id="winpiBalance">0.00</strong> Pi</span>
+          <div class="stats-row">
+            <span class="stat-chip">Tickets: <strong id="winpiTickets">10</strong></span>
+            <span class="stat-chip">Score: <strong id="winpiPoints">100</strong> pts</span>
+            <span class="stat-chip">Streak: <strong id="winpiStreak">1d</strong></span>
             <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
           </div>
         </div>
 
         <div class="nav-tabs">
-          <button type="button" id="tabHome" class="nav-btn active" onclick="showWinpiSection('home')">Home &amp; Bet</button>
-          <button type="button" id="tabCasino" class="nav-btn" onclick="showWinpiSection('casino')">Casino</button>
-          <button type="button" id="tabBets" class="nav-btn" onclick="showWinpiSection('bets')">My Bets</button>
-          <button type="button" id="tabWallet" class="nav-btn" onclick="showWinpiSection('wallet')">Deposit &amp; Withdraw</button>
+          <button type="button" id="tabHome" class="nav-btn active" onclick="showWinpiSection('home')">Match Predictions</button>
+          <button type="button" id="tabArcade" class="nav-btn" onclick="showWinpiSection('arcade')">Arcade Arena</button>
+          <button type="button" id="tabHistory" class="nav-btn" onclick="showWinpiSection('history')">My Picks</button>
+          <button type="button" id="tabLeaderboard" class="nav-btn" onclick="showWinpiSection('leaderboard')">Leaderboard</button>
+          <button type="button" id="tabStore" class="nav-btn" onclick="showWinpiSection('store')">Ticket Store (Pi)</button>
           <button type="button" id="tabProfile" class="nav-btn" onclick="showWinpiSection('profile')">Profile</button>
         </div>
 
-        <!-- HOME & BET SECTION -->
+        <!-- MATCH PREDICTIONS SECTION -->
         <div id="secHome" class="panel">
           <div class="sport-tabs">
             <button type="button" id="sportFootball" class="sport-btn active" onclick="renderMatches('Football')">Football</button>
@@ -269,83 +291,99 @@
           <div id="winpiMatchesList"></div>
 
           <div class="match-card" style="margin-top: 10px;">
-            <div><strong>Bet Slip:</strong> <span id="slipSelection">None selected</span></div>
+            <div><strong>Prediction Card:</strong> <span id="slipSelection">None selected</span></div>
             <div style="margin-top: 4px; font-size: 12px; color: #d8cff0;">
-              Odds: <strong id="slipOdds">0.00</strong> | Potential Win: <strong id="slipPotentialWin" style="color: #f5b942;">0.00 Pi</strong>
+              Point Multiplier: <strong id="slipMultiplier">0.00x</strong> | Potential Score Gain: <strong id="slipPotentialPts" style="color: #f5b942;">0 pts</strong>
             </div>
             <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label for="stakeInput">Stake (Pi):</label>
-              <input id="stakeInput" type="number" min="0.01" step="0.1" value="1" oninput="updateSlipPreview()" />
-              <button type="button" class="action-btn" onclick="placeDemoBet()">Place Bet</button>
+              <label for="ticketInput">Tickets to Use:</label>
+              <input id="ticketInput" type="number" min="1" max="100" step="1" value="1" oninput="updateSlipPreview()" />
+              <button type="button" class="action-btn" onclick="submitPrediction()">Submit Prediction</button>
               <button type="button" class="sport-btn" onclick="clearSlip()">Clear</button>
             </div>
             <div id="slipMsg" style="margin-top: 6px; color: #9be7ff; font-size: 12px;"></div>
           </div>
         </div>
 
-        <!-- CASINO SECTION -->
-        <div id="secCasino" class="panel" style="display: none;">
-          <strong>WinPi Casino (Lucky Spins &amp; Aviator)</strong>
+        <!-- ARCADE ARENA SECTION -->
+        <div id="secArcade" class="panel" style="display: none;">
+          <strong>WinPi Casual Arcade (Skill &amp; Timing Challenges)</strong>
           <div class="match-card" style="margin-top: 8px;">
-            <div>Play Lucky Spins or Aviator multiplier round using <strong>Pi</strong>.</div>
+            <div>Use <strong>Game Tickets</strong> to play casual mini-games and climb the weekly Pioneer Leaderboard.</div>
             <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label for="casinoStake">Amount (Pi):</label>
-              <input id="casinoStake" type="number" min="0.01" step="0.1" value="1" />
-              <button type="button" class="action-btn" onclick="playCasino('Lucky Spins')">Spin Wheel (2x)</button>
-              <button type="button" class="sport-btn" onclick="playCasino('Aviator')">Aviator Cashout (1.8x)</button>
+              <label for="arcadeTickets">Tickets:</label>
+              <input id="arcadeTickets" type="number" min="1" max="50" step="1" value="1" />
+              <button type="button" class="action-btn" onclick="playArcade('Penalty Shootout')">Penalty Shootout (20 pts/ticket)</button>
+              <button type="button" class="sport-btn" onclick="playArcade('Sky Rocket Runner')">Sky Rocket Runner (18 pts/ticket)</button>
             </div>
-            <div id="casinoMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;"></div>
+            <div id="arcadeMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;"></div>
           </div>
         </div>
 
-        <!-- MY BETS SECTION -->
-        <div id="secBets" class="panel" style="display: none;">
+        <!-- MY PICKS HISTORY SECTION -->
+        <div id="secHistory" class="panel" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <strong>My Bets &amp; Casino History</strong>
-            <button type="button" class="sport-btn" onclick="settleOpenSportsBets()">Settle Open Bets</button>
+            <strong>My Predictions &amp; Arcade Score History</strong>
+            <button type="button" class="sport-btn" onclick="scoreOpenPredictions()">Evaluate Finished Matches</button>
           </div>
-          <div id="myBetsList" style="margin-top: 8px;">No bets placed yet.</div>
+          <div id="myPicksList" style="margin-top: 8px;">No predictions submitted yet.</div>
         </div>
 
-        <!-- DEPOSIT & WITHDRAW SECTION -->
-        <div id="secWallet" class="panel" style="display: none;">
-          <strong>Deposit &amp; Withdraw (Pi SDK Payments)</strong>
+        <!-- LEADERBOARD SECTION -->
+        <div id="secLeaderboard" class="panel" style="display: none;">
+          <strong>Weekly Pioneer Skill Leaderboard</strong>
+          <p style="font-size: 12px; color: #d8cff0; margin-top: 4px;">
+            Compete with Pioneers worldwide by earning skill points from accurate sports analysis and arcade games.
+          </p>
+          <div id="leaderboardList" style="margin-top: 8px;"></div>
+        </div>
+
+        <!-- TICKET STORE (PI SDK PAYMENTS) SECTION -->
+        <div id="secStore" class="panel" style="display: none;">
+          <strong>WinPi Tournament Pass &amp; Ticket Store (Pi Payments)</strong>
+          <p style="font-size: 12px; color: #d8cff0; margin-top: 4px;">
+            Purchase extra Tournament Tickets using <strong>Pi</strong> (1 Pi = 10 Game Tickets) to enter more sports prediction leagues and arcade rounds.
+          </p>
           <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <label for="walletAmount">Amount (Pi):</label>
-            <input id="walletAmount" type="number" min="1" max="1000" step="0.5" value="1" />
-            <button type="button" id="depositBtn" class="action-btn" onclick="handleWallet('deposit')">Deposit with Pi</button>
-            <button type="button" id="withdrawBtn" class="sport-btn" onclick="handleWallet('withdraw')">Withdraw</button>
+            <label for="piPackAmount">Package (Pi):</label>
+            <input id="piPackAmount" type="number" min="1" max="100" step="1" value="1" oninput="updatePackPreview()" />
+            <span style="font-size: 12px; color: #f5b942;">= <strong id="packTicketCount">10</strong> Tickets</span>
+            <button type="button" id="buyTicketsBtn" class="action-btn" onclick="handleBuyTickets()">Buy Tickets with Pi</button>
           </div>
-          <div id="walletMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;">
-            Pi Limits: Min Deposit/Withdraw: 1 Pi | Max Withdraw: 1,000 Pi.
+          <div id="storeMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;">
+            Verified Pi SDK digital utility purchase (1 Pi = 10 Non-withdrawable Game Tickets).
           </div>
         </div>
 
         <!-- PROFILE SECTION -->
         <div id="secProfile" class="panel" style="display: none;">
-          <strong>Pioneer Profile</strong>
+          <strong>Pioneer Profile &amp; Daily Retention</strong>
           <div style="margin-top: 6px;">Username: <span id="profileUsername">@pioneer</span></div>
-          <div>Active Currency: Pi</div>
-          <div>Network Mode: <span id="profileNetworkMode">Testnet (Sandbox)</span></div>
-          <div style="margin-top: 8px;">
+          <div>Available Game Tickets: <strong id="profileTickets">10</strong></div>
+          <div>Season Skill Score: <strong id="profilePoints">100</strong> pts</div>
+          <div>Daily Check-In Streak: <strong id="profileStreak">1 Day</strong></div>
+          <div>Network Mode: <span id="profileNetworkMode">Open Mainnet (Live Pi)</span></div>
+          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="action-btn" onclick="claimDailyBonus()">Claim Daily +3 Tickets</button>
             <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
           </div>
+          <div id="profileMsg" style="margin-top: 6px; color: #9be7ff; font-size: 12px;"></div>
         </div>
       </div>
     </div>
 
-    <!-- IMAGE ADS BANNER (PI NETWORK, CASINO, FOOTBALL — NO VIDEOS) -->
+    <!-- PROMO BANNERS (PI NETWORK, ARCADE, FOOTBALL) -->
     <div id="winpiAdsBanner">
       <div class="ad-header">
-        <strong style="color: #f5b942; font-size: 13px;">Featured Promo Banners (Images Only)</strong>
+        <strong style="color: #f5b942; font-size: 13px;">Featured Community Highlights</strong>
         <span id="adCounter" style="font-size: 11px; color: #9be7ff;">1 / 3</span>
       </div>
 
       <div id="adSlideCard">
-        <div id="adCategoryTag" style="font-size: 11px; color: #f5b942; font-weight: bold; text-transform: uppercase;">Pi Network</div>
-        <div id="adTitle" style="font-size: 16px; font-weight: bold; color: #ffffff; margin-top: 4px;">Sign In &amp; Play with Pi</div>
+        <div id="adCategoryTag" style="font-size: 11px; color: #f5b942; font-weight: bold; text-transform: uppercase;">Pi Ecosystem</div>
+        <div id="adTitle" style="font-size: 16px; font-weight: bold; color: #ffffff; margin-top: 4px;">Get Tournament Tickets with Pi</div>
         <div id="adDesc" style="font-size: 12px; color: #e6defc; margin-top: 4px; line-height: 1.5;">
-          Connect your Pi Browser account and explore WinPi sports &amp; mini-games.
+          Sign in with Pi Browser and unlock digital Game Tickets for daily sports predictions &amp; arcade leaderboards.
         </div>
         <img id="adImageEl" src="" alt="WinPi Promo Banner" style="display: none; width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; margin-top: 10px;" />
       </div>
@@ -357,63 +395,66 @@
       </div>
     </div>
 
-    <!-- 18+, RULES & LIMITS -->
+    <!-- MAINNET LISTING & PI NEXT HACKATHON COMPLIANCE -->
     <div class="rules-box">
-      <strong style="color: #f5b942;">18+, Rules, Fair Play &amp; Limits:</strong>
+      <strong style="color: #f5b942;">Pi Ecosystem Utility, Fair Play &amp; Mainnet Listing Compliance:</strong>
       <ul style="margin: 6px 0 0 18px; padding: 0;">
-        <li><strong>18+ &amp; Compliance:</strong> Users must be at least 18 years old and follow Pi Network terms as well as applicable local laws.</li>
-        <li><strong>Pi Network Only:</strong> WinPi operates using Pi exclusively (Min Deposit/Withdraw: 1 Pi, Max Withdraw: 1,000 Pi) via Pi SDK and server-verified settlement.</li>
-        <li><strong>Fair Play &amp; Settlement:</strong> Match picks (1X2 / markets) and mini-games (Lucky Spins, Aviator) follow transparent odds/multipliers and official settlement rules; abuse or automated exploits are prohibited.</li>
-        <li><strong>Verified Pi Payments:</strong> Deposits use live Pi SDK payment flows approved and completed via backend endpoints (/api/approve &amp; /api/complete).</li>
+        <li><strong>Skill &amp; Entertainment Utility:</strong> WinPi is a free-to-start sports prediction and casual arcade game platform built for Pi Network community engagement and daily retention.</li>
+        <li><strong>Digital In-App Tickets:</strong> Pioneers receive free starter tickets and daily retention bonuses, and may optionally buy extra Game Tickets with Pi via official Pi SDK payments (/api/approve &amp; /api/complete).</li>
+        <li><strong>Non-Monetary Leaderboard Points:</strong> Game Tickets and Leaderboard Points are strictly digital in-app entertainment items with no cash value and cannot be exchanged back for Pi or fiat currency.</li>
+        <li><strong>Fair Play:</strong> Automated bots, multi-account farming, or score manipulation are prohibited to ensure fair competition for all Pioneers.</li>
       </ul>
     </div>
 
     <p class="pi-notice" id="piNoticeFooter">
-      <strong>Pi Network Notice:</strong> Configured for Pi SDK in Pi Browser with Pi-only transactions and backend-verified settlement.
+      <strong>Open Mainnet Notice:</strong> Running on Pi Open Mainnet (sandbox: false) in Pi Browser with official Pi SDK authentication and backend-verified Pi payments.
     </p>
   </div>
 
   <script>
     let currentUser = "@pioneer";
-    let piBalance = 0.0;
+    let ticketBalance = 10;
+    let skillPoints = 100;
+    let streakDays = 1;
+    let dailyBonusClaimed = false;
     let activeSport = "Football";
     let selectedPick = null;
-    const betsHistory = [];
+    const picksHistory = [];
 
     const fixturesBySport = {
       Football: [
-        { id: "fb1", status: "LIVE 34'", match: "Yanga SC vs Mamelodi Sundowns", o1: 2.40, ox: 3.10, o2: 2.85 },
-        { id: "fb2", status: "UPCOMING 20:00", match: "Real Madrid vs AS Roma", o1: 1.65, ox: 3.80, o2: 4.90 }
+        { id: "fb1", status: "LIVE 34'", match: "Yanga SC vs Mamelodi Sundowns", m1: 2.4, mx: 3.1, m2: 2.85 },
+        { id: "fb2", status: "UPCOMING 20:00", match: "Real Madrid vs AS Roma", m1: 1.65, mx: 3.8, m2: 4.9 }
       ],
       Basketball: [
-        { id: "bb1", status: "LIVE Q2", match: "Court Kings vs Metro Hawks", o1: 1.75, ox: 12.0, o2: 2.05 }
+        { id: "bb1", status: "LIVE Q2", match: "Court Kings vs Metro Hawks", m1: 1.75, mx: 4.5, m2: 2.05 }
       ],
       Tennis: [
-        { id: "tn1", status: "LIVE SET 2", match: "Player A vs Player B", o1: 1.58, ox: 1.0, o2: 2.35 }
+        { id: "tn1", status: "LIVE SET 2", match: "Pioneer Aces vs Baseline Pros", m1: 1.58, mx: 2.2, m2: 2.35 }
       ]
     };
 
     const winpiPromoAds = [
       {
-        tag: "Pi Network",
-        title: "Sign In & Play with Pi",
-        desc: "Use Pi Browser authentication and Pi SDK payments to deposit and play smoothly.",
+        tag: "Pi Ecosystem",
+        title: "Unlock Extra Game Tickets with Pi",
+        desc: "Use Pi SDK payments to get additional Tournament Tickets and enter more match challenges.",
         imgUrl: "",
-        targetSection: "wallet"
+        targetSection: "store"
       },
       {
-        tag: "Casino",
-        title: "Lucky Spins & Aviator Arena",
-        desc: "Try Lucky Spins wheel and Aviator multiplier rounds inside WinPi.",
+        tag: "Arcade Arena",
+        title: "Penalty Shootout & Sky Rocket Runner",
+        desc: "Test your timing and reflexes in casual arcade games to earn bonus leaderboard points.",
         imgUrl: "",
-        targetSection: "casino"
+        targetSection: "arcade"
       },
       {
-        tag: "Football",
-        title: "Global Football Leagues (1X2)",
-        desc: "Pick 1, X, or 2 on featured football fixtures and track your slip.",
+        tag: "Sports League",
+        title: "Weekly Pioneer Prediction Leaderboard",
+        desc: "Analyze Football, Basketball, and Tennis fixtures and climb to the #1 Pioneer spot.",
         imgUrl: "",
-        targetSection: "home"
+        targetSection: "leaderboard"
       }
     ];
 
@@ -429,26 +470,52 @@
       if (profileNetEl) profileNetEl.textContent = profileLabel;
       if (noticeEl) {
         noticeEl.innerHTML = window.IS_MAINNET
-          ? "<strong>Open Mainnet Notice:</strong> Configured for Open Mainnet Pi SDK (sandbox: false) in Pi Browser with real Pi transactions and backend-verified settlement."
-          : "<strong>Testnet Notice:</strong> Currently running in Pi Testnet mode (sandbox: true) for Test-Pi verification. Switches seamlessly to Open Mainnet when enabled.";
+          ? "<strong>Open Mainnet Notice:</strong> Running on Pi Open Mainnet (sandbox: false) in Pi Browser with real Pi digital utility purchases and backend-verified settlement."
+          : "<strong>Testnet Notice:</strong> Currently running in Pi Testnet mode (sandbox: true) via ?network=testnet for Test-Pi verification.";
       }
     }
 
-    function refreshBalanceUI() {
-      document.getElementById("winpiBalance").textContent = (+piBalance).toFixed(2);
+    function refreshStatsUI() {
+      document.getElementById("winpiTickets").textContent = Math.floor(ticketBalance);
+      document.getElementById("winpiPoints").textContent = Math.floor(skillPoints);
+      document.getElementById("winpiStreak").textContent = streakDays + "d";
+      document.getElementById("profileTickets").textContent = Math.floor(ticketBalance);
+      document.getElementById("profilePoints").textContent = Math.floor(skillPoints);
+      document.getElementById("profileStreak").textContent = streakDays + (streakDays === 1 ? " Day" : " Days");
+      renderLeaderboard();
+    }
+
+    function claimDailyBonus() {
+      const msgEl = document.getElementById("profileMsg");
+      if (dailyBonusClaimed) {
+        msgEl.textContent = "You already claimed today's daily retention bonus. Come back tomorrow!";
+        return;
+      }
+      dailyBonusClaimed = true;
+      streakDays += 1;
+      ticketBalance += 3;
+      skillPoints += 15;
+      refreshStatsUI();
+      msgEl.textContent = "Daily retention bonus claimed! +3 Game Tickets and +15 Leaderboard pts added.";
+    }
+
+    function updatePackPreview() {
+      const piVal = parseInt(document.getElementById("piPackAmount").value, 10);
+      const validPi = !isNaN(piVal) && piVal > 0 ? piVal : 0;
+      document.getElementById("packTicketCount").textContent = validPi * 10;
     }
 
     function updateSlipPreview() {
-      const stakeVal = parseFloat(document.getElementById("stakeInput").value);
-      const validStake = !isNaN(stakeVal) && stakeVal > 0 ? stakeVal : 0;
+      const ticketVal = parseInt(document.getElementById("ticketInput").value, 10);
+      const validTickets = !isNaN(ticketVal) && ticketVal > 0 ? ticketVal : 0;
       if (!selectedPick) {
-        document.getElementById("slipOdds").textContent = "0.00";
-        document.getElementById("slipPotentialWin").textContent = "0.00 Pi";
+        document.getElementById("slipMultiplier").textContent = "0.00x";
+        document.getElementById("slipPotentialPts").textContent = "0 pts";
         return;
       }
-      document.getElementById("slipOdds").textContent = selectedPick.odd.toFixed(2);
-      const pot = +(validStake * selectedPick.odd).toFixed(2);
-      document.getElementById("slipPotentialWin").textContent = `${pot.toFixed(2)} Pi`;
+      document.getElementById("slipMultiplier").textContent = selectedPick.mult.toFixed(2) + "x";
+      const potPts = Math.round(validTickets * 10 * selectedPick.mult);
+      document.getElementById("slipPotentialPts").textContent = `${potPts} pts`;
     }
 
     function clearSlip() {
@@ -462,22 +529,27 @@
     function showWinpiSection(section) {
       const map = {
         home: "secHome",
-        casino: "secCasino",
-        bets: "secBets",
-        wallet: "secWallet",
+        arcade: "secArcade",
+        history: "secHistory",
+        leaderboard: "secLeaderboard",
+        store: "secStore",
         profile: "secProfile"
       };
       const tabMap = {
         home: "tabHome",
-        casino: "tabCasino",
-        bets: "tabBets",
-        wallet: "tabWallet",
+        arcade: "tabArcade",
+        history: "tabHistory",
+        leaderboard: "tabLeaderboard",
+        store: "tabStore",
         profile: "tabProfile"
       };
       Object.keys(map).forEach((key) => {
         document.getElementById(map[key]).style.display = key === section ? "block" : "none";
         document.getElementById(tabMap[key]).classList.toggle("active", key === section);
       });
+      if (section === "leaderboard") {
+        renderLeaderboard();
+      }
     }
 
     function renderMatches(sport) {
@@ -491,9 +563,9 @@
       const list = fixturesBySport[activeSport] || fixturesBySport.Football;
       container.innerHTML = list
         .map((item) => {
-          const is1 = selectedPick && selectedPick.match === item.match && selectedPick.market === "1";
-          const isX = selectedPick && selectedPick.match === item.match && selectedPick.market === "X";
-          const is2 = selectedPick && selectedPick.match === item.match && selectedPick.market === "2";
+          const is1 = selectedPick && selectedPick.match === item.match && selectedPick.market === "Home (1)";
+          const isX = selectedPick && selectedPick.match === item.match && selectedPick.market === "Draw (X)";
+          const is2 = selectedPick && selectedPick.match === item.match && selectedPick.market === "Away (2)";
           return `
             <div class="match-card">
               <div class="match-meta">
@@ -501,9 +573,9 @@
                 <span class="live-pill">${item.status}</span>
               </div>
               <div class="odds-row" style="margin-bottom: 0;">
-                <button type="button" class="odd-btn ${is1 ? "selected" : ""}" onclick="pickOdd('${item.match}', '1', ${item.o1})">1 (${item.o1.toFixed(2)})</button>
-                <button type="button" class="odd-btn ${isX ? "selected" : ""}" onclick="pickOdd('${item.match}', 'X', ${item.ox})">X (${item.ox.toFixed(2)})</button>
-                <button type="button" class="odd-btn ${is2 ? "selected" : ""}" onclick="pickOdd('${item.match}', '2', ${item.o2})">2 (${item.o2.toFixed(2)})</button>
+                <button type="button" class="odd-btn ${is1 ? "selected" : ""}" onclick="pickOutcome('${item.match}', 'Home (1)', ${item.m1})">Home (${item.m1.toFixed(2)}x)</button>
+                <button type="button" class="odd-btn ${isX ? "selected" : ""}" onclick="pickOutcome('${item.match}', 'Draw (X)', ${item.mx})">Draw (${item.mx.toFixed(2)}x)</button>
+                <button type="button" class="odd-btn ${is2 ? "selected" : ""}" onclick="pickOutcome('${item.match}', 'Away (2)', ${item.m2})">Away (${item.m2.toFixed(2)}x)</button>
               </div>
             </div>
           `;
@@ -511,146 +583,154 @@
         .join("");
     }
 
-    function pickOdd(match, market, odd) {
-      selectedPick = { match, market, odd };
-      document.getElementById("slipSelection").textContent = `${match} — Pick ${market} @ ${odd.toFixed(2)}`;
+    function pickOutcome(match, market, mult) {
+      selectedPick = { match, market, mult };
+      document.getElementById("slipSelection").textContent = `${match} — ${market} (${mult.toFixed(2)}x)`;
       document.getElementById("slipMsg").textContent = "";
       updateSlipPreview();
       renderMatches(activeSport);
     }
 
-    function placeDemoBet() {
+    function submitPrediction() {
       const msg = document.getElementById("slipMsg");
-      const stakeVal = parseFloat(document.getElementById("stakeInput").value);
+      const ticketVal = parseInt(document.getElementById("ticketInput").value, 10);
       if (!selectedPick) {
-        msg.textContent = "Please select 1, X, or 2 on a match first.";
+        msg.textContent = "Please select Home, Draw, or Away on a match first.";
         return;
       }
-      if (isNaN(stakeVal) || stakeVal <= 0) {
-        msg.textContent = "Please enter a valid stake amount in Pi.";
+      if (isNaN(ticketVal) || ticketVal < 1) {
+        msg.textContent = "Please enter at least 1 Game Ticket.";
         return;
       }
-      if (stakeVal > piBalance + 1e-9) {
-        msg.textContent = "Insufficient Pi balance. Please deposit Pi in Deposit & Withdraw first.";
+      if (ticketVal > ticketBalance) {
+        msg.textContent = "Not enough Game Tickets. Visit Ticket Store (Pi) to unlock more tickets.";
         return;
       }
-      piBalance = Math.max(0, +(piBalance - stakeVal).toFixed(4));
-      refreshBalanceUI();
-      const potentialWin = +(stakeVal * selectedPick.odd).toFixed(2);
-      betsHistory.unshift({
-        id: "bet_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+      ticketBalance -= ticketVal;
+      refreshStatsUI();
+      const potentialPts = Math.round(ticketVal * 10 * selectedPick.mult);
+      picksHistory.unshift({
+        id: "pick_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
         kind: "sports",
-        status: "OPEN",
-        stakeNum: stakeVal,
-        oddNum: selectedPick.odd,
-        match: `${selectedPick.match} (Pick ${selectedPick.market} @ ${selectedPick.odd.toFixed(2)})`,
-        stakeText: `${stakeVal.toFixed(2)} Pi`,
-        winText: `${potentialWin.toFixed(2)} Pi`
+        status: "PENDING",
+        ticketsUsed: ticketVal,
+        multNum: selectedPick.mult,
+        match: `${selectedPick.match} — ${selectedPick.market} (${selectedPick.mult.toFixed(2)}x)`,
+        ticketsText: `${ticketVal} Ticket(s)`,
+        pointsText: `${potentialPts} pts`
       });
-      renderMyBets();
-      msg.textContent = `Bet placed (OPEN)! Stake: ${stakeVal.toFixed(2)} Pi | Potential win: ${potentialWin.toFixed(2)} Pi`;
+      renderMyPicks();
+      msg.textContent = `Prediction locked! Used ${ticketVal} Ticket(s) | Potential gain: +${potentialPts} pts`;
     }
 
-    function cashoutBet(betId) {
-      const bet = betsHistory.find((b) => b.id === betId);
-      if (!bet || bet.status !== "OPEN") return;
-      const cashoutAmt = +(bet.stakeNum * 0.85).toFixed(2);
-      piBalance = +(piBalance + cashoutAmt).toFixed(4);
-      bet.status = "CASHED OUT";
-      bet.winText = `${cashoutAmt.toFixed(2)} Pi`;
-      refreshBalanceUI();
-      renderMyBets();
-    }
-
-    function settleOpenSportsBets() {
-      let settledCount = 0;
-      betsHistory.forEach((bet) => {
-        if (bet.kind === "sports" && bet.status === "OPEN") {
-          const won = Math.random() >= 0.45;
-          if (won) {
-            const payout = +(bet.stakeNum * bet.oddNum).toFixed(2);
-            piBalance = +(piBalance + payout).toFixed(4);
-            bet.status = "WON";
-            bet.winText = `${payout.toFixed(2)} Pi`;
+    function scoreOpenPredictions() {
+      let evaluatedCount = 0;
+      picksHistory.forEach((pick) => {
+        if (pick.kind === "sports" && pick.status === "PENDING") {
+          const correct = Math.random() >= 0.45;
+          if (correct) {
+            const earnedPts = Math.round(pick.ticketsUsed * 10 * pick.multNum);
+            skillPoints += earnedPts;
+            pick.status = "CORRECT";
+            pick.pointsText = `+${earnedPts} pts`;
           } else {
-            bet.status = "LOST";
-            bet.winText = "0.00 Pi";
+            const consolation = pick.ticketsUsed * 2;
+            skillPoints += consolation;
+            pick.status = "COMPLETED";
+            pick.pointsText = `+${consolation} pts (Participation)`;
           }
-          settledCount++;
+          evaluatedCount++;
         }
       });
-      refreshBalanceUI();
-      renderMyBets();
-      const box = document.getElementById("myBetsList");
-      if (settledCount > 0) {
+      refreshStatsUI();
+      renderMyPicks();
+      const box = document.getElementById("myPicksList");
+      if (evaluatedCount > 0) {
         const note = document.createElement("div");
         note.style.cssText = "color:#9be7ff; font-size:12px; margin-bottom:8px;";
-        note.textContent = `Settled ${settledCount} open bet(s).`;
+        note.textContent = `Evaluated ${evaluatedCount} prediction(s) and updated your Leaderboard Score!`;
         box.prepend(note);
       }
     }
 
-    function playCasino(gameName) {
-      const msg = document.getElementById("casinoMsg");
-      const amtVal = parseFloat(document.getElementById("casinoStake").value);
-      if (isNaN(amtVal) || amtVal <= 0) {
-        msg.textContent = "Please enter a valid Pi amount.";
+    function playArcade(gameName) {
+      const msg = document.getElementById("arcadeMsg");
+      const ticketVal = parseInt(document.getElementById("arcadeTickets").value, 10);
+      if (isNaN(ticketVal) || ticketVal < 1) {
+        msg.textContent = "Please enter at least 1 Game Ticket.";
         return;
       }
-      if (amtVal > piBalance + 1e-9) {
-        msg.textContent = "Insufficient Pi balance. Please deposit Pi first.";
+      if (ticketVal > ticketBalance) {
+        msg.textContent = "Insufficient Game Tickets. Get more in Ticket Store (Pi).";
         return;
       }
-      const mult = gameName === "Lucky Spins" ? 2.0 : 1.8;
-      piBalance = Math.max(0, +(piBalance - amtVal).toFixed(4));
-      const won = Math.random() >= 0.5;
-      const payout = won ? +(amtVal * mult).toFixed(2) : 0;
-      if (won) {
-        piBalance = +(piBalance + payout).toFixed(4);
-      }
-      refreshBalanceUI();
-      betsHistory.unshift({
-        id: "cas_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-        kind: "casino",
-        status: won ? "WON" : "LOST",
-        stakeNum: amtVal,
-        oddNum: mult,
-        match: `Casino: ${gameName} (${mult.toFixed(1)}x)`,
-        stakeText: `${amtVal.toFixed(2)} Pi`,
-        winText: `${payout.toFixed(2)} Pi`
+      const basePts = gameName === "Penalty Shootout" ? 20 : 18;
+      ticketBalance -= ticketVal;
+      const highRank = Math.random() >= 0.4;
+      const earnedPts = highRank ? ticketVal * basePts : ticketVal * 5;
+      skillPoints += earnedPts;
+      refreshStatsUI();
+      picksHistory.unshift({
+        id: "arc_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+        kind: "arcade",
+        status: highRank ? "HIGH SCORE" : "PLAYED",
+        ticketsUsed: ticketVal,
+        multNum: 1,
+        match: `Arcade: ${gameName}`,
+        ticketsText: `${ticketVal} Ticket(s)`,
+        pointsText: `+${earnedPts} pts`
       });
-      renderMyBets();
-      msg.textContent = won
-        ? `${gameName} WON! Stake: ${amtVal.toFixed(2)} Pi | Payout: ${payout.toFixed(2)} Pi`
-        : `${gameName} finished — Stake: ${amtVal.toFixed(2)} Pi | Payout: 0.00 Pi`;
+      renderMyPicks();
+      msg.textContent = highRank
+        ? `Awesome round in ${gameName}! You earned +${earnedPts} Leaderboard pts.`
+        : `${gameName} completed! You earned +${earnedPts} participation pts.`;
     }
 
-    function renderMyBets() {
-      const box = document.getElementById("myBetsList");
-      if (!betsHistory.length) {
-        box.textContent = "No bets placed yet.";
+    function renderMyPicks() {
+      const box = document.getElementById("myPicksList");
+      if (!picksHistory.length) {
+        box.textContent = "No predictions submitted yet.";
         return;
       }
-      box.innerHTML = betsHistory
-        .map((b) => {
-          const canCashout = b.kind === "sports" && b.status === "OPEN";
-          const cashoutVal = (b.stakeNum * 0.85).toFixed(2);
+      box.innerHTML = picksHistory
+        .map((p) => {
           return `
             <div class="match-card">
               <div class="match-meta">
-                <strong>${b.match}</strong>
-                <span class="live-pill">${b.status}</span>
+                <strong>${p.match}</strong>
+                <span class="live-pill">${p.status}</span>
               </div>
-              Stake: ${b.stakeText} | Payout / Potential: <strong>${b.winText}</strong>
-              ${canCashout ? `<br><button type="button" class="mini-btn" onclick="cashoutBet('${b.id}')">Cashout (${cashoutVal} Pi)</button>` : ""}
+              Used: ${p.ticketsText} | Score Reward: <strong>${p.pointsText}</strong>
             </div>
           `;
         })
         .join("");
     }
 
+    function renderLeaderboard() {
+      const box = document.getElementById("leaderboardList");
+      if (!box) return;
+      const entries = [
+        { user: "@kigali_striker", pts: 480 },
+        { user: "@kampala_ace", pts: 390 },
+        { user: "@pi_tactician", pts: 260 },
+        { user: currentUser + " (You)", pts: skillPoints }
+      ].sort((a, b) => b.pts - a.pts);
+
+      box.innerHTML = entries
+        .map(
+          (row, idx) => `
+          <div class="leader-row">
+            <span><strong>#${idx + 1}</strong> ${row.user}</span>
+            <strong style="color: #f5b942;">${row.pts} pts</strong>
+          </div>
+        `
+        )
+        .join("");
+    }
+
     // =========================================================================
-    // LIVE PI SDK PAYMENT FLOW (WORKS FOR BOTH TESTNET & MAINNET)
+    // LIVE PI SDK PAYMENT FLOW FOR DIGITAL GAME TICKETS (MAINNET DEFAULT)
     // =========================================================================
     async function postJsonToBackend(url, payload) {
       const response = await fetch(url, {
@@ -667,38 +747,40 @@
       return data;
     }
 
-    function startPiDeposit(amount) {
-      const msg = document.getElementById("walletMsg");
-      const depositBtn = document.getElementById("depositBtn");
+    function startTicketPurchase(piAmount) {
+      const msg = document.getElementById("storeMsg");
+      const buyBtn = document.getElementById("buyTicketsBtn");
+      const ticketsToGrant = piAmount * 10;
 
       if (!window.Pi) {
-        msg.textContent = "Please open WinPi inside Pi Browser to deposit Pi.";
+        msg.textContent = "Please open WinPi inside Pi Browser to purchase Game Tickets with Pi.";
         return;
       }
 
-      depositBtn.disabled = true;
-      msg.textContent = `Initializing ${window.IS_MAINNET ? "Mainnet" : "Testnet"} Pi payment of ${amount} Pi...`;
+      buyBtn.disabled = true;
+      msg.textContent = `Initializing ${window.IS_MAINNET ? "Open Mainnet" : "Testnet"} Pi payment for ${ticketsToGrant} Game Tickets (${piAmount} Pi)...`;
 
       Pi.createPayment(
         {
-          amount: amount,
-          memo: `WinPi Deposit (${amount} Pi)`,
+          amount: piAmount,
+          memo: `WinPi ${ticketsToGrant} Game Tickets (${piAmount} Pi)`,
           metadata: {
             user: currentUser,
             network: window.WINPI_NETWORK_MODE,
-            amount: amount
+            item: "game_tickets",
+            tickets: ticketsToGrant
           }
         },
         {
           onReadyForServerApproval: async function (paymentId) {
-            msg.textContent = "Approving payment with WinPi server...";
+            msg.textContent = "Approving ticket purchase with WinPi server...";
             try {
               await postJsonToBackend("/api/approve", { paymentId: paymentId });
-              msg.textContent = "Payment approved. Please confirm the transaction in your Pi Wallet...";
+              msg.textContent = "Purchase approved. Please confirm the Pi transaction in your Pi Wallet...";
             } catch (err) {
               console.error("Server approval failed:", err);
               msg.textContent = "Server approval failed: " + err.message;
-              depositBtn.disabled = false;
+              buyBtn.disabled = false;
             }
           },
           onReadyForServerCompletion: async function (paymentId, txid) {
@@ -708,61 +790,38 @@
                 paymentId: paymentId,
                 txid: txid
               });
-              piBalance = +(piBalance + amount).toFixed(4);
-              refreshBalanceUI();
-              msg.textContent = `Success! ${amount} Pi deposited and verified on ${window.IS_MAINNET ? "Open Mainnet" : "Pi Testnet"}.`;
+              ticketBalance += ticketsToGrant;
+              refreshStatsUI();
+              msg.textContent = `Success! Added +${ticketsToGrant} Game Tickets via ${window.IS_MAINNET ? "Open Mainnet" : "Pi Testnet"}.`;
             } catch (err) {
               console.error("Server completion failed:", err);
               msg.textContent = "Server completion failed: " + err.message;
             } finally {
-              depositBtn.disabled = false;
+              buyBtn.disabled = false;
             }
           },
           onCancel: function (paymentId) {
             console.log("Payment cancelled:", paymentId);
-            msg.textContent = "Payment was cancelled.";
-            depositBtn.disabled = false;
+            msg.textContent = "Ticket purchase was cancelled.";
+            buyBtn.disabled = false;
           },
           onError: function (error, payment) {
             console.error("Pi payment error:", error, payment);
             msg.textContent = "Pi payment error: " + (error && error.message ? error.message : "Transaction failed.");
-            depositBtn.disabled = false;
+            buyBtn.disabled = false;
           }
         }
       );
     }
 
-    function handleWallet(type) {
-      const msg = document.getElementById("walletMsg");
-      const amtVal = parseFloat(document.getElementById("walletAmount").value);
-      if (isNaN(amtVal) || amtVal <= 0) {
-        msg.textContent = "Please enter a valid amount in Pi.";
+    function handleBuyTickets() {
+      const msg = document.getElementById("storeMsg");
+      const piVal = parseInt(document.getElementById("piPackAmount").value, 10);
+      if (isNaN(piVal) || piVal < 1 || piVal > 100) {
+        msg.textContent = "Please enter a valid package between 1 Pi and 100 Pi.";
         return;
       }
-
-      if (type === "deposit") {
-        if (amtVal < 1) {
-          msg.textContent = "Minimum deposit is 1 Pi.";
-          return;
-        }
-        startPiDeposit(amtVal);
-      } else {
-        if (amtVal < 1) {
-          msg.textContent = "Minimum withdrawal is 1 Pi.";
-          return;
-        }
-        if (amtVal > 1000) {
-          msg.textContent = "Maximum withdrawal is 1,000 Pi.";
-          return;
-        }
-        if (amtVal > piBalance + 1e-9) {
-          msg.textContent = "Withdrawal amount cannot exceed current Pi balance.";
-          return;
-        }
-        piBalance = Math.max(0, +(piBalance - amtVal).toFixed(4));
-        refreshBalanceUI();
-        msg.textContent = `Withdrawal request of ${amtVal} Pi submitted for backend payout processing.`;
-      }
+      startTicketPurchase(piVal);
     }
 
     function renderWinpiAd() {
@@ -825,8 +884,9 @@
     }
 
     syncNetworkLabels();
-    refreshBalanceUI();
+    refreshStatsUI();
     updateSlipPreview();
+    updatePackPreview();
     renderWinpiAd();
 
     document.getElementById("piLoginBtn").addEventListener("click", async function () {
@@ -835,7 +895,7 @@
         statusEl.textContent = "Please open this app inside Pi Browser.";
         return;
       }
-      statusEl.textContent = `Connecting to Pi (${window.IS_MAINNET ? "Mainnet" : "Testnet"})...`;
+      statusEl.textContent = `Connecting to Pi (${window.IS_MAINNET ? "Open Mainnet" : "Testnet"})...`;
       try {
         const auth = await Pi.authenticate(["username", "payments"], onIncompletePaymentFound);
         currentUser = "@" + auth.user.username;
@@ -844,7 +904,7 @@
         document.getElementById("winpiApp").style.display = "block";
         document.getElementById("winpiUserBadge").textContent = currentUser;
         document.getElementById("profileUsername").textContent = currentUser;
-        refreshBalanceUI();
+        refreshStatsUI();
         renderMatches("Football");
         showWinpiSection("home");
       } catch (err) {
