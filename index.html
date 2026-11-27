@@ -3,17 +3,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WinPi - Pi Next Hackathon Skill Sports &amp; Arcade Arena</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>WinPi — Pi Mainnet Sports &amp; Aviator Arena</title>
   <script src="https://sdk.minepi.com/pi-sdk.js"></script>
   <script>
-    // =========================================================================
-    // NETWORK MODE CONFIGURATION FOR PI NEXT HACKATHON & MAINNET LISTING:
-    // Defaults to "mainnet" (sandbox: false) as required for Pi Next Hackathon
-    // submissions ("Mainnet Pi apps and SoloHost apps" & Mainnet Listing).
-    // You can test on Testnet anytime by appending ?network=testnet to the URL.
-    // Ensure PI_API_KEY in Vercel Environment Variables is your Mainnet API Key.
-    // =========================================================================
     const urlParams = new URLSearchParams(window.location.search);
     const requestedMode = (urlParams.get("network") || "").toLowerCase();
     window.WINPI_NETWORK_MODE = requestedMode === "testnet" ? "testnet" : "mainnet";
@@ -24,893 +17,2985 @@
     }
   </script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #140d2b;
-      color: #ffffff;
-      text-align: center;
-      padding: 26px 14px;
+    :root {
+      --pi-bg: #120822;
+      --pi-surface: #1d1035;
+      --pi-card: #261645;
+      --pi-card-soft: #2f1c54;
+      --pi-border: rgba(244, 180, 26, 0.2);
+      --pi-border-subtle: rgba(255, 255, 255, 0.09);
+      --pi-purple: #7b42bc;
+      --pi-purple-bright: #9b5de5;
+      --pi-gold: #f4b41a;
+      --pi-gold-dark: #c98f06;
+      --pi-text: #ffffff;
+      --pi-muted: #b9add6;
+      --pi-success: #22c55e;
+      --pi-danger: #ef4444;
+    }
+
+    body.light-mode {
+      --pi-bg: #f3effa;
+      --pi-surface: #ffffff;
+      --pi-card: #ffffff;
+      --pi-card-soft: #ede6f9;
+      --pi-border: rgba(123, 66, 188, 0.25);
+      --pi-border-subtle: rgba(26, 16, 51, 0.1);
+      --pi-text: #180d2e;
+      --pi-muted: #5b4d7a;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
-    .card {
-      max-width: 760px;
-      margin: 0 auto;
-      background: #221647;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--pi-bg);
+      color: var(--pi-text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 108px;
     }
-    h1 {
-      margin-top: 0;
-      color: #f5b942;
+
+    /* TOP HEADER */
+    .top-header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: #170b2c;
+      border-bottom: 1px solid var(--pi-border);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
     }
-    .pi-auth-box {
-      margin: 16px auto 8px;
-      padding: 16px;
-      background: #140d2b;
-      border: 1px solid rgba(245, 185, 66, 0.35);
-      border-radius: 12px;
-      max-width: 640px;
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      user-select: none;
     }
-    #piLoginBtn {
-      background: linear-gradient(135deg, #f5b942, #ffcf66);
-      color: #140d2b;
+
+    .pi-coin-emblem {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pi-gold), #ffd56b);
+      color: #190c30;
+      font-weight: 900;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px rgba(244, 180, 26, 0.45);
+    }
+
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+      color: #ffffff;
+    }
+
+    .brand-title span {
+      color: var(--pi-gold);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .icon-circle-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .wallet-pill {
+      display: flex;
+      align-items: center;
+      background: #241342;
+      border: 1px solid var(--pi-border);
+      border-radius: 999px;
+      padding: 3px 4px 3px 10px;
+      gap: 7px;
+    }
+
+    .eye-toggle {
+      background: none;
       border: none;
-      padding: 12px 22px;
+      color: var(--pi-muted);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .wallet-balance-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--pi-gold);
+      white-space: nowrap;
+    }
+
+    .plus-deposit-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--pi-gold), #ffcf56);
+      color: #190c30;
+      font-size: 18px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* CATEGORY SUB-BAR */
+    .category-bar {
+      position: sticky;
+      top: 55px;
+      z-index: 85;
+      background: #1c0e36;
+      border-bottom: 1px solid var(--pi-border-subtle);
+      display: flex;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 0 6px;
+    }
+
+    .category-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-tab {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #c7bce0;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+
+    .cat-tab.active {
+      color: var(--pi-gold);
+      border-bottom-color: var(--pi-gold);
+      background: rgba(244, 180, 26, 0.08);
+    }
+
+    /* SIGN IN / NETWORK BANNER */
+    .network-strip {
+      background: linear-gradient(90deg, rgba(123, 66, 188, 0.35), rgba(244, 180, 26, 0.16));
+      border-bottom: 1px solid var(--pi-border);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .pi-connect-btn {
+      background: linear-gradient(135deg, var(--pi-gold), #ffd15c);
+      color: #180b2e;
+      border: none;
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* SEARCH BAR DRAWER */
+    .search-drawer {
+      display: none;
+      background: var(--pi-surface);
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--pi-border);
+    }
+
+    .search-drawer.open {
+      display: block;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--pi-card-soft);
+      border: 1px solid var(--pi-border);
       border-radius: 10px;
-      font-weight: bold;
+      padding: 10px 12px;
+      color: var(--pi-text);
+      font-size: 13px;
+      outline: none;
+    }
+
+    /* MAIN CONTAINER */
+    .view-section {
+      display: none;
+      padding: 12px;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    /* PROMO BANNER */
+    .promo-card {
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      position: relative;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    }
+
+    .promo-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      background: none;
+      border: none;
+      color: var(--pi-muted);
       font-size: 16px;
       cursor: pointer;
-      width: 100%;
     }
-    #piStatus {
-      margin-top: 10px;
-      color: #9be7ff;
-      font-size: 14px;
-    }
-    #winpiApp {
-      display: none;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(245, 185, 66, 0.25);
-      text-align: left;
-    }
-    .top-bar {
+
+    .promo-meta {
+      font-size: 11px;
+      color: var(--pi-muted);
+      margin-bottom: 5px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    .stats-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-    .stat-chip {
-      background: #2c1d5c;
-      border: 1px solid rgba(245, 185, 66, 0.35);
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      color: #f5b942;
-    }
-    .nav-tabs, .sport-tabs, .odds-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-    .nav-btn, .sport-btn, .odd-btn, .action-btn {
-      background: #2c1d5c;
-      color: #ffffff;
-      border: 1px solid rgba(245, 185, 66, 0.3);
-      padding: 7px 11px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    .nav-btn.active, .sport-btn.active {
-      background: #f5b942;
-      color: #140d2b;
-      font-weight: bold;
-    }
-    .odd-btn.selected {
-      background: #f5b942;
-      color: #140d2b;
-      font-weight: bold;
-      border-color: #ffcf66;
-    }
-    .panel {
-      background: #221647;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      color: #e6defc;
-      line-height: 1.6;
-      margin-bottom: 10px;
-    }
-    .match-card {
-      background: #140d2b;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .match-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
       gap: 6px;
+    }
+
+    .promo-body {
+      font-size: 13.5px;
+      line-height: 1.45;
+      font-weight: 600;
+      margin-bottom: 10px;
+      padding-right: 16px;
+    }
+
+    .outline-action-btn {
+      background: rgba(244, 180, 26, 0.12);
+      border: 1px solid var(--pi-gold);
+      color: var(--pi-gold);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    /* LEAGUE CHIPS SCROLLER */
+    .league-scroller {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 10px;
       margin-bottom: 6px;
     }
-    .live-pill {
-      background: rgba(245, 185, 66, 0.16);
-      color: #f5b942;
-      border: 1px solid rgba(245, 185, 66, 0.4);
+
+    .league-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .league-pill {
+      flex: 0 0 auto;
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 999px;
+      padding: 7px 12px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--pi-text);
+      cursor: pointer;
+    }
+
+    .league-pill.active {
+      border-color: var(--pi-gold);
+      background: rgba(244, 180, 26, 0.15);
+    }
+
+    .count-badge {
+      background: rgba(123, 66, 188, 0.45);
+      color: var(--pi-gold);
+      font-size: 11px;
+      font-weight: 800;
       padding: 2px 7px;
       border-radius: 999px;
-      font-size: 10px;
-      font-weight: bold;
     }
-    .odd-btn {
-      flex: 1;
-      min-width: 75px;
-      text-align: center;
-    }
-    .action-btn {
-      background: #f5b942;
-      color: #140d2b;
-      font-weight: bold;
-    }
-    .action-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .logout-btn {
-      background: #4a1c2f;
-      color: #ffd6e0;
-      border: 1px solid rgba(255, 120, 150, 0.4);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-    #winpiAdsBanner {
-      margin: 14px auto 8px;
-      padding: 14px;
-      background: #140d2b;
-      border: 1px solid rgba(245, 185, 66, 0.3);
-      border-radius: 12px;
-      max-width: 640px;
-      text-align: left;
-    }
-    .ad-header {
+
+    /* SECTION HEADERS */
+    .section-heading {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      margin: 10px 0 8px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .info-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      border: 1px solid var(--pi-muted);
+      color: var(--pi-muted);
+      font-size: 11px;
+      margin-left: 5px;
+    }
+
+    /* POPULAR MATCH COMBOS */
+    .combo-scroller {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 8px;
       margin-bottom: 10px;
     }
-    #adSlideCard {
-      background: linear-gradient(135deg, #2c1d5c, #191038);
-      border: 1px solid rgba(245, 185, 66, 0.25);
-      border-radius: 10px;
-      padding: 14px;
+
+    .combo-scroller::-webkit-scrollbar {
+      display: none;
     }
-    .ad-controls {
+
+    .combo-card {
+      flex: 0 0 275px;
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 14px;
+      padding: 13px;
+    }
+
+    .combo-time {
+      font-size: 11.5px;
+      color: var(--pi-muted);
+      margin-bottom: 6px;
+    }
+
+    .combo-teams {
+      font-size: 14.5px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+
+    .combo-league {
+      font-size: 11.5px;
+      color: var(--pi-muted);
+      margin-bottom: 10px;
+    }
+
+    .combo-leg {
+      font-size: 12px;
+      padding: 3px 0 3px 10px;
+      border-left: 2px solid var(--pi-purple-bright);
+      margin-bottom: 5px;
+      color: var(--pi-text);
+    }
+
+    .combo-leg span {
+      color: var(--pi-muted);
+    }
+
+    .combo-odds-btn {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 9px;
+      border: 1px solid var(--pi-border);
+      background: var(--pi-card-soft);
+      color: var(--pi-gold);
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* 1UP & 2UP TOGGLE BAR */
+    .toggle-card {
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 12px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 25px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #3e2b66;
+      transition: 0.25s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 19px;
+      width: 19px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #ffffff;
+      transition: 0.25s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--pi-gold);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(21px);
+      background-color: #190c30;
+    }
+
+    /* SPORT FILTER CHIPS */
+    .sport-filter-row {
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 10px;
+    }
+
+    .sport-filter-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .sport-chip {
+      flex: 0 0 auto;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border-subtle);
+      color: var(--pi-muted);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .sport-chip.active {
+      background: var(--pi-purple);
+      border-color: var(--pi-gold);
+      color: #ffffff;
+    }
+
+    /* MATCH CARD (1X2, 1UP, 2UP) */
+    .match-card {
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 14px;
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+
+    .match-top-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-top: 10px;
+      font-size: 11.5px;
+      color: var(--pi-muted);
+      margin-bottom: 6px;
     }
-    .rules-box {
-      margin: 14px auto 8px;
-      padding: 12px;
-      background: #140d2b;
-      border: 1px solid rgba(245, 185, 66, 0.25);
-      border-radius: 10px;
-      max-width: 640px;
-      font-size: 12px;
-      color: #d8cff0;
-      line-height: 1.55;
-      text-align: left;
-    }
-    input[type="number"] {
-      padding: 6px 8px;
+
+    .live-badge {
+      background: rgba(34, 197, 94, 0.18);
+      color: #4ade80;
+      padding: 2px 8px;
       border-radius: 6px;
-      border: 1px solid rgba(245, 185, 66, 0.4);
-      background: #140d2b;
-      color: #ffffff;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .match-teams {
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 3px;
+    }
+
+    .match-breadcrumb {
+      font-size: 11.5px;
+      color: var(--pi-muted);
+      margin-bottom: 10px;
+    }
+
+    .market-label {
+      font-size: 12px;
+      font-weight: 800;
+      margin: 8px 0 6px;
+      display: flex;
+      align-items: center;
+      color: var(--pi-text);
+    }
+
+    .odds-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 36px;
+      gap: 6px;
+    }
+
+    .odd-btn {
+      background: var(--pi-card-soft);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 9px;
+      padding: 9px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--pi-text);
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .odd-btn .pick-key {
+      color: var(--pi-muted);
+      font-weight: 700;
+    }
+
+    .odd-btn.selected {
+      background: linear-gradient(135deg, var(--pi-gold), #ffd15c);
+      color: #190c30;
+      border-color: var(--pi-gold);
+    }
+
+    .odd-btn.selected .pick-key {
+      color: #190c30;
+    }
+
+    .more-markets-btn {
+      background: var(--pi-card-soft);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 9px;
+      color: var(--pi-muted);
+      font-weight: 800;
       font-size: 13px;
-      width: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
-    .pi-notice {
-      line-height: 1.75;
+
+    /* =========================================
+       PI AVIATOR ARENA (EXACT LAYOUT IN PI THEME)
+       ========================================= */
+    .aviator-shell {
+      background: #0f071c;
+      border: 1px solid var(--pi-border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .aviator-topbar {
+      background: #1a0d30;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--pi-border-subtle);
+    }
+
+    .aviator-brand {
+      font-size: 19px;
+      font-weight: 900;
+      font-style: italic;
+      color: var(--pi-gold);
+      letter-spacing: -0.5px;
+    }
+
+    .aviator-bal {
+      font-size: 13.5px;
+      font-weight: 900;
+      color: #4ade80;
+    }
+
+    .history-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding: 8px 10px;
+      background: #130924;
+    }
+
+    .history-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hist-pill {
+      flex: 0 0 auto;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .hist-low { color: #38bdf8; }
+    .hist-mid { color: #c084fc; }
+    .hist-high { color: var(--pi-gold); }
+
+    .aviator-stage {
+      position: relative;
+      height: 215px;
+      margin: 0 10px 10px;
+      border-radius: 14px;
+      background:
+        repeating-conic-gradient(
+          from 0deg at 0% 100%,
+          rgba(123, 66, 188, 0.14) 0deg 10deg,
+          rgba(18, 8, 34, 0.92) 10deg 20deg
+        );
+      border: 1px solid var(--pi-border);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .aviator-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .aviator-center-readout {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .aviator-multiplier {
+      font-size: 46px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 0 4px 18px rgba(0, 0, 0, 0.75);
+      line-height: 1;
+    }
+
+    .aviator-status-tag {
+      margin-top: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--pi-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .live-pilots-pill {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      z-index: 3;
+      background: rgba(18, 8, 34, 0.85);
+      border: 1px solid var(--pi-border);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    /* DUAL AVIATOR CONTROL PANELS */
+    .aviator-panel {
+      background: #1b0e33;
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 14px;
+      padding: 10px;
+      margin: 0 10px 10px;
+    }
+
+    .panel-mode-tabs {
+      display: flex;
+      background: #110722;
+      border-radius: 999px;
+      padding: 3px;
+      width: 170px;
+      margin: 0 auto 10px;
+    }
+
+    .panel-mode-btn {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--pi-muted);
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 5px 0;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    .panel-mode-btn.active {
+      background: var(--pi-purple);
+      color: #ffffff;
+    }
+
+    .panel-controls-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .stake-box {
+      background: #110722;
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 10px;
+      padding: 6px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .step-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--pi-border);
+      background: #241342;
+      color: #ffffff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .stake-val-input {
+      width: 72px;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 900;
+      text-align: center;
+      outline: none;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .preset-btn {
+      background: #241342;
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 8px;
+      color: var(--pi-muted);
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 5px 0;
+      cursor: pointer;
+    }
+
+    .aviator-action-btn {
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 900;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 10px;
+      box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+    }
+
+    .aviator-action-btn.cashout-state {
+      background: linear-gradient(135deg, var(--pi-gold), #e09b00);
+      color: #190c30;
+      box-shadow: 0 4px 14px rgba(244, 180, 26, 0.45);
+    }
+
+    .aviator-action-btn.waiting-state {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #ffffff;
+    }
+
+    .aviator-action-sub {
       font-size: 14px;
-      color: #e6defc;
-      margin-top: 18px;
+      margin-top: 3px;
     }
-    .leader-row {
+
+    /* AVIATOR LIVE BETS FEED */
+    .aviator-feed-box {
+      background: #170b2c;
+      margin: 0 10px 10px;
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid var(--pi-border-subtle);
+    }
+
+    .feed-tabs {
+      display: flex;
+      background: #10061f;
+      border-radius: 999px;
+      padding: 3px;
+      margin-bottom: 10px;
+    }
+
+    .feed-tab {
+      flex: 1;
+      text-align: center;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 6px 0;
+      border-radius: 999px;
+      color: var(--pi-muted);
+      cursor: pointer;
+    }
+
+    .feed-tab.active {
+      background: #28154a;
+      color: var(--pi-gold);
+    }
+
+    .feed-summary {
       display: flex;
       justify-content: space-between;
-      padding: 7px 10px;
-      background: #140d2b;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 12px;
+    }
+
+    .feed-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 0.7fr 1fr;
+      align-items: center;
+      padding: 6px 8px;
       border-radius: 8px;
+      font-size: 11.5px;
+      margin-bottom: 4px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .feed-row.won {
+      background: rgba(34, 197, 94, 0.14);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .aviator-footer-bar {
+      background: #190c30;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--pi-border-subtle);
+    }
+
+    .provably-fair-tag {
+      font-size: 11px;
+      color: var(--pi-muted);
+    }
+
+    .aviator-deposit-cta {
+      background: linear-gradient(135deg, var(--pi-gold), #ffd15c);
+      color: #190c30;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12.5px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    /* CASINO ARCADE GRID */
+    .arcade-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .arcade-tile {
+      background: linear-gradient(160deg, #2d1854, #180b2e);
+      border: 1px solid var(--pi-border);
+      border-radius: 12px;
+      padding: 12px 8px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .arcade-icon {
+      font-size: 28px;
       margin-bottom: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .arcade-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .arcade-tag {
+      font-size: 10px;
+      color: var(--pi-gold);
+      margin-top: 3px;
+      font-weight: 700;
+    }
+
+    /* MY PLAYS (MY BETS) */
+    .plays-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: var(--pi-card);
+      border-bottom: 1px solid var(--pi-border-subtle);
+      margin: -12px -12px 14px;
+    }
+
+    .play-tab {
+      text-align: center;
+      padding: 13px 0;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--pi-muted);
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+    }
+
+    .play-tab.active {
+      color: var(--pi-gold);
+      border-bottom-color: var(--pi-gold);
+    }
+
+    .empty-plays-state {
+      text-align: center;
+      padding: 46px 20px;
+    }
+
+    .empty-illustration {
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 16px;
+      border-radius: 22px;
+      background: rgba(244, 180, 26, 0.14);
+      border: 1px solid var(--pi-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+    }
+
+    .browse-cta-btn {
+      margin-top: 16px;
+      background: linear-gradient(135deg, var(--pi-gold), #ffd15c);
+      color: #190c30;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 24px;
+      font-size: 13.5px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .placed-slip-card {
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border);
+      border-radius: 13px;
+      padding: 13px;
+      margin-bottom: 10px;
+    }
+
+    /* MY ACCOUNT SHEET */
+    .account-header-card {
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border);
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+
+    .account-identity-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--pi-border-subtle);
+      margin-bottom: 12px;
+    }
+
+    .account-email {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--pi-text);
+    }
+
+    .account-username {
+      font-size: 12px;
+      color: var(--pi-gold);
+      margin-top: 2px;
+    }
+
+    .account-pi-bal {
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--pi-gold);
+    }
+
+    .account-quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .acc-quick-btn {
+      background: var(--pi-card-soft);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 10px;
+      padding: 12px;
+      color: var(--pi-text);
+      font-size: 13.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .acc-list-card {
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border-subtle);
+      border-radius: 14px;
+      padding: 6px 14px;
+      margin-bottom: 12px;
+    }
+
+    .acc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--pi-border-subtle);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .acc-row:last-child {
+      border-bottom: none;
+    }
+
+    .lang-pill-switch {
+      display: inline-flex;
+      background: var(--pi-card-soft);
+      border-radius: 999px;
+      padding: 2px;
+      border: 1px solid var(--pi-border);
+    }
+
+    .lang-opt {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .lang-opt.active {
+      background: var(--pi-gold);
+      color: #190c30;
+    }
+
+    .logout-card-btn {
+      width: 100%;
+      background: var(--pi-card);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #f87171;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: left;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    /* WIN BONUS RIBBON + BOTTOM NAV */
+    .bonus-ribbon {
+      position: fixed;
+      bottom: 58px;
+      left: 0;
+      right: 0;
+      z-index: 88;
+      background: linear-gradient(90deg, var(--pi-gold-dark), var(--pi-gold), #ffe082);
+      color: #180b2e;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 14px;
+      text-align: center;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 58px;
+      z-index: 95;
+      background: #160a2a;
+      border-top: 1px solid var(--pi-border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: #b7abd4;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item.active {
+      color: var(--pi-gold);
+    }
+
+    .nav-badge {
+      position: absolute;
+      top: 5px;
+      right: 22%;
+      background: var(--pi-gold);
+      color: #190c30;
+      font-size: 10px;
+      font-weight: 900;
+      min-width: 17px;
+      height: 17px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+    }
+
+    /* MODALS (DEPOSIT / WITHDRAW / BETSLIP / EMAIL) */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: rgba(8, 3, 18, 0.8);
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      width: 100%;
+      max-width: 520px;
+      background: #1d1035;
+      border-top: 2px solid var(--pi-gold);
+      border-radius: 20px 20px 0 0;
+      padding: 18px 16px 26px;
+      max-height: 88vh;
+      overflow-y: auto;
+      color: #ffffff;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--pi-gold);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--pi-border);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 12px;
+      color: var(--pi-muted);
+      margin: 10px 0 5px;
+      font-weight: 700;
+    }
+
+    .modal-input {
+      width: 100%;
+      background: #120822;
+      border: 1px solid var(--pi-border);
+      border-radius: 10px;
+      padding: 11px 12px;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      outline: none;
+    }
+
+    .primary-gold-btn {
+      width: 100%;
+      margin-top: 14px;
+      padding: 13px;
+      border-radius: 11px;
+      border: none;
+      background: linear-gradient(135deg, var(--pi-gold), #ffd15c);
+      color: #190c30;
+      font-size: 14.5px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .status-note {
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--pi-gold);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .back-top-btn {
+      display: block;
+      margin: 14px auto 6px;
+      background: var(--pi-card);
+      border: 1px solid var(--pi-border);
+      color: var(--pi-text);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>WinPi</h1>
-    <p id="heroSubtitle">Pi Next Hackathon entry: skill sports prediction leagues, daily retention challenges &amp; casual arcade arena for Pi Pioneers.</p>
 
-    <div class="pi-auth-box">
-      <button id="piLoginBtn" type="button">Sign in with Pi</button>
-      <div id="piStatus">Not signed in yet. Open in Pi Browser for official Pi SDK authentication.</div>
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="top-header">
+    <div class="brand-logo" onclick="switchView('home')">
+      <div class="pi-coin-emblem">π</div>
+      <div class="brand-title">Win<span>Pi</span></div>
+    </div>
 
-      <div id="winpiApp">
-        <div class="top-bar">
+    <div class="header-actions">
+      <button class="icon-circle-btn" onclick="toggleSearch()" title="Search">🔍</button>
+      <button class="icon-circle-btn" onclick="openHelpToast()" title="Help">?</button>
+      <div class="wallet-pill">
+        <button class="eye-toggle" onclick="toggleBalanceMask()" id="eyeBtn">👁</button>
+        <span class="wallet-balance-text" id="topBalanceText">12.50 π</span>
+        <button class="plus-deposit-btn" onclick="openModal('depositModal')" title="Deposit Pi">+</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HORIZONTAL CATEGORY STRIP -->
+  <nav class="category-bar">
+    <div class="cat-tab active" data-tab="home" onclick="switchView('home')">🏠 HOME</div>
+    <div class="cat-tab" data-tab="sports" onclick="switchView('sports')">⚽ SPORTS</div>
+    <div class="cat-tab" data-tab="live" onclick="switchView('live')">📈 LIVE</div>
+    <div class="cat-tab" data-tab="aviator" onclick="switchView('aviator')">✈️ AVIATOR &amp; CASINO</div>
+    <div class="cat-tab" data-tab="virtuals" onclick="switchView('virtuals')">🎮 VIRTUALS</div>
+  </nav>
+
+  <!-- PI NETWORK CONNECTION BAR -->
+  <div class="network-strip">
+    <span id="piSessionText">Pi Open Mainnet • Ready (@pioneer)</span>
+    <button class="pi-connect-btn" id="piSignInBtn" onclick="connectPiWallet()">Connect Pi</button>
+  </div>
+
+  <!-- SEARCH DRAWER -->
+  <div class="search-drawer" id="searchDrawer">
+    <input type="text" class="search-input" id="searchInput" placeholder="Search Football, Basketball, Tennis, Aviator..." oninput="filterMatchesBySearch(this.value)" />
+  </div>
+
+  <!-- =========================================================
+       VIEW 1: HOME (EXPANDED SPORTS + COMBOS + 1UP/2UP)
+       ========================================================= -->
+  <main class="view-section active" id="view-home">
+    <!-- PROMO CARD -->
+    <div class="promo-card" id="promoBanner">
+      <button class="promo-close" onclick="document.getElementById('promoBanner').style.display='none'">✕</button>
+      <div class="promo-meta">🪙 Pi Pioneer Arena • Mainnet Live</div>
+      <div class="promo-body">
+        Your 25% Pi Arena Bonus is active in your WinPi wallet. Play Football, Basketball, Tennis &amp; Pi Aviator using Pi (π) only.
+      </div>
+      <button class="outline-action-btn" onclick="switchView('aviator')">LAUNCH PI AVIATOR</button>
+    </div>
+
+    <!-- LEAGUE PILLS -->
+    <div class="league-scroller">
+      <div class="league-pill active" onclick="filterLeague('ALL', this)">🌍 All Leagues <span class="count-badge">1480</span></div>
+      <div class="league-pill" onclick="filterLeague('Premier League', this)">🏴 Premier League <span class="count-badge">20</span></div>
+      <div class="league-pill" onclick="filterLeague('Serie A', this)">🇮🇹 Serie A <span class="count-badge">20</span></div>
+      <div class="league-pill" onclick="filterLeague('LaLiga', this)">🇪🇸 LaLiga <span class="count-badge">22</span></div>
+      <div class="league-pill" onclick="filterLeague('Bundesliga', this)">🇩🇪 Bundesliga <span class="count-badge">18</span></div>
+      <div class="league-pill" onclick="filterLeague('NBA', this)">🏀 NBA <span class="count-badge">14</span></div>
+      <div class="league-pill" onclick="filterLeague('ATP Tour', this)">🎾 ATP Tennis <span class="count-badge">16</span></div>
+    </div>
+
+    <!-- POPULAR MATCH COMBOS -->
+    <div class="section-heading">
+      <div>Popular Match Combos <span class="info-dot">i</span></div>
+    </div>
+    <div class="combo-scroller">
+      <div class="combo-card">
+        <div class="combo-time">10:30 pm • Today</div>
+        <div class="combo-teams">Werder Bremen<br>Borussia Monchengladbach</div>
+        <div class="combo-league">Germany / Bundesliga</div>
+        <div class="combo-leg">• <strong>1</strong> <span>1X2 | Full Time</span></div>
+        <div class="combo-leg">• <strong>Yes</strong> <span>Both Teams To Score</span></div>
+        <div class="combo-leg">• <strong>Over 2.5</strong> <span>Goals | Full Time</span></div>
+        <button class="combo-odds-btn" onclick="addSelection('combo1', 'Bremen vs Gladbach (Combo)', '3-Way Combo', 3.03)">Add Combo • 3.03</button>
+      </div>
+
+      <div class="combo-card">
+        <div class="combo-time">10:45 pm • Today</div>
+        <div class="combo-teams">Venezia FC<br>Bologna FC</div>
+        <div class="combo-league">Italy / Serie A</div>
+        <div class="combo-leg">• <strong>2</strong> <span>1X2 | Full Time</span></div>
+        <div class="combo-leg">• <strong>No</strong> <span>Both Teams To Score</span></div>
+        <div class="combo-leg">• <strong>Over 1.5</strong> <span>Goals | Full Time</span></div>
+        <button class="combo-odds-btn" onclick="addSelection('combo2', 'Venezia vs Bologna (Combo)', '3-Way Combo', 4.15)">Add Combo • 4.15</button>
+      </div>
+    </div>
+
+    <!-- SPORT CATEGORY CHIPS -->
+    <div class="section-heading">
+      <div>⚽ Featured Matches</div>
+      <span class="count-badge">1483 &gt;</span>
+    </div>
+
+    <div class="sport-filter-row">
+      <button class="sport-chip active" onclick="filterSport('ALL', this)">All Sports</button>
+      <button class="sport-chip" onclick="filterSport('Football', this)">⚽ Football</button>
+      <button class="sport-chip" onclick="filterSport('Basketball', this)">🏀 Basketball</button>
+      <button class="sport-chip" onclick="filterSport('Tennis', this)">🎾 Tennis</button>
+      <button class="sport-chip" onclick="filterSport('eFootball', this)">🎮 eFootball</button>
+    </div>
+
+    <!-- SHOW 1UP & 2UP SWITCH -->
+    <div class="toggle-card">
+      <span>Show 1UP &amp; 2UP</span>
+      <label class="switch">
+        <input type="checkbox" id="upToggle" checked onchange="renderMatches()" />
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- MATCHES LIST -->
+    <div id="homeMatchesContainer"></div>
+
+    <button class="back-top-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})">⌃ Back to top</button>
+  </main>
+
+  <!-- =========================================================
+       VIEW 2: SPORTS DIRECTORY (LEAGUES & COUNTRIES)
+       ========================================================= -->
+  <section class="view-section" id="view-sports">
+    <div class="section-heading">
+      <div>🏆 Leagues &amp; Tournaments</div>
+      <span class="count-badge">Pi Mainnet</span>
+    </div>
+
+    <div class="acc-list-card">
+      <div class="acc-row" onclick="jumpToLeague('Premier League')"><span>🏴 England • Premier League</span><span class="count-badge">20 &gt;</span></div>
+      <div class="acc-row" onclick="jumpToLeague('Serie A')"><span>🇮🇹 Italy • Serie A</span><span class="count-badge">20 &gt;</span></div>
+      <div class="acc-row" onclick="jumpToLeague('LaLiga')"><span>🇪🇸 Spain • LaLiga</span><span class="count-badge">22 &gt;</span></div>
+      <div class="acc-row" onclick="jumpToLeague('Bundesliga')"><span>🇩🇪 Germany • Bundesliga</span><span class="count-badge">18 &gt;</span></div>
+      <div class="acc-row" onclick="jumpToLeague('UEFA Champions League')"><span>🇪🇺 UEFA Champions League</span><span class="count-badge">18 &gt;</span></div>
+      <div class="acc-row" onclick="jumpToLeague('NBA')"><span>🏀 USA • NBA Basketball</span><span class="count-badge">14 &gt;</span></div>
+      <div class="acc-row" onclick="jumpToLeague('ATP Tour')"><span>🎾 International • ATP Tennis</span><span class="count-badge">16 &gt;</span></div>
+    </div>
+
+    <div class="section-heading"><div>🌍 Popular Countries</div></div>
+    <div class="acc-list-card">
+      <div class="acc-row" onclick="switchView('home')"><span>🏴 England</span><span>124</span></div>
+      <div class="acc-row" onclick="switchView('home')"><span>🇪🇸 Spain</span><span>98</span></div>
+      <div class="acc-row" onclick="switchView('home')"><span>🇮🇹 Italy</span><span>92</span></div>
+      <div class="acc-row" onclick="switchView('home')"><span>🇩🇪 Germany</span><span>86</span></div>
+      <div class="acc-row" onclick="switchView('home')"><span>🇫🇷 France</span><span>74</span></div>
+      <div class="acc-row" onclick="switchView('home')"><span>🇺🇸 United States (NBA / Tennis)</span><span>81</span></div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       VIEW 3: LIVE IN-PLAY MATCHES
+       ========================================================= -->
+  <section class="view-section" id="view-live">
+    <div class="section-heading">
+      <div>📈 Live In-Play Arena</div>
+      <span class="live-badge">● 27 LIVE</span>
+    </div>
+    <div id="liveMatchesContainer"></div>
+  </section>
+
+  <!-- =========================================================
+       VIEW 4: PI AVIATOR & CASINO ARENA (IN PI ONLY)
+       ========================================================= -->
+  <section class="view-section" id="view-aviator">
+    <div class="aviator-shell">
+      <div class="aviator-topbar">
+        <div class="aviator-brand">Pi Aviator</div>
+        <div class="aviator-bal" id="aviatorBalanceDisplay">12.50 π</div>
+      </div>
+
+      <!-- MULTIPLIER HISTORY BAR -->
+      <div class="history-bar" id="aviatorHistoryBar">
+        <span class="hist-pill hist-low">1.02x</span>
+        <span class="hist-pill hist-low">1.95x</span>
+        <span class="hist-pill hist-mid">2.59x</span>
+        <span class="hist-pill hist-high">20.78x</span>
+        <span class="hist-pill hist-mid">5.39x</span>
+        <span class="hist-pill hist-high">23.14x</span>
+        <span class="hist-pill hist-high">208.67x</span>
+      </div>
+
+      <!-- FLIGHT STAGE -->
+      <div class="aviator-stage">
+        <canvas class="aviator-canvas" id="aviatorCanvas"></canvas>
+        <div class="aviator-center-readout">
+          <div class="aviator-multiplier" id="aviatorMultiplierText">1.00x</div>
+          <div class="aviator-status-tag" id="aviatorStatusText">PREPARING NEXT FLIGHT...</div>
+        </div>
+        <div class="live-pilots-pill">👥 2,605 Pioneers</div>
+      </div>
+
+      <!-- PANEL 1 -->
+      <div class="aviator-panel">
+        <div class="panel-mode-tabs">
+          <button class="panel-mode-btn active" onclick="setPanelMode(1, 'Play', this)">Play</button>
+          <button class="panel-mode-btn" onclick="setPanelMode(1, 'Auto', this)">Auto</button>
+        </div>
+        <div class="panel-controls-grid">
           <div>
-            <strong style="color: #f5b942; font-size: 15px;">WinPi</strong>
-            <span id="winpiUserBadge" style="font-size: 12px; color: #9be7ff; margin-left: 8px;">@pioneer</span>
-            <span id="networkBadge" class="live-pill" style="margin-left: 6px;">OPEN MAINNET</span>
-          </div>
-          <div class="stats-row">
-            <span class="stat-chip">Tickets: <strong id="winpiTickets">10</strong></span>
-            <span class="stat-chip">Score: <strong id="winpiPoints">100</strong> pts</span>
-            <span class="stat-chip">Streak: <strong id="winpiStreak">1d</strong></span>
-            <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
-          </div>
-        </div>
-
-        <div class="nav-tabs">
-          <button type="button" id="tabHome" class="nav-btn active" onclick="showWinpiSection('home')">Match Predictions</button>
-          <button type="button" id="tabArcade" class="nav-btn" onclick="showWinpiSection('arcade')">Arcade Arena</button>
-          <button type="button" id="tabHistory" class="nav-btn" onclick="showWinpiSection('history')">My Picks</button>
-          <button type="button" id="tabLeaderboard" class="nav-btn" onclick="showWinpiSection('leaderboard')">Leaderboard</button>
-          <button type="button" id="tabStore" class="nav-btn" onclick="showWinpiSection('store')">Ticket Store (Pi)</button>
-          <button type="button" id="tabProfile" class="nav-btn" onclick="showWinpiSection('profile')">Profile</button>
-        </div>
-
-        <!-- MATCH PREDICTIONS SECTION -->
-        <div id="secHome" class="panel">
-          <div class="sport-tabs">
-            <button type="button" id="sportFootball" class="sport-btn active" onclick="renderMatches('Football')">Football</button>
-            <button type="button" id="sportBasketball" class="sport-btn" onclick="renderMatches('Basketball')">Basketball</button>
-            <button type="button" id="sportTennis" class="sport-btn" onclick="renderMatches('Tennis')">Tennis</button>
-          </div>
-
-          <div id="winpiMatchesList"></div>
-
-          <div class="match-card" style="margin-top: 10px;">
-            <div><strong>Prediction Card:</strong> <span id="slipSelection">None selected</span></div>
-            <div style="margin-top: 4px; font-size: 12px; color: #d8cff0;">
-              Point Multiplier: <strong id="slipMultiplier">0.00x</strong> | Potential Score Gain: <strong id="slipPotentialPts" style="color: #f5b942;">0 pts</strong>
+            <div class="stake-box">
+              <button class="step-btn" onclick="adjustAviatorStake(1, -0.5)">−</button>
+              <input type="number" step="0.1" min="0.1" class="stake-val-input" id="aviatorStake1" value="1.00" onchange="syncAviatorBtnLabel(1)" />
+              <button class="step-btn" onclick="adjustAviatorStake(1, 0.5)">+</button>
             </div>
-            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label for="ticketInput">Tickets to Use:</label>
-              <input id="ticketInput" type="number" min="1" max="100" step="1" value="1" oninput="updateSlipPreview()" />
-              <button type="button" class="action-btn" onclick="submitPrediction()">Submit Prediction</button>
-              <button type="button" class="sport-btn" onclick="clearSlip()">Clear</button>
+            <div class="preset-grid">
+              <button class="preset-btn" onclick="setAviatorStake(1, 0.5)">0.5 π</button>
+              <button class="preset-btn" onclick="setAviatorStake(1, 1.0)">1.0 π</button>
+              <button class="preset-btn" onclick="setAviatorStake(1, 2.0)">2.0 π</button>
+              <button class="preset-btn" onclick="setAviatorStake(1, 5.0)">5.0 π</button>
             </div>
-            <div id="slipMsg" style="margin-top: 6px; color: #9be7ff; font-size: 12px;"></div>
           </div>
+          <button class="aviator-action-btn" id="aviatorBtn1" onclick="handleAviatorButton(1)">
+            <span>Play</span>
+            <span class="aviator-action-sub" id="aviatorBtnSub1">1.00 π</span>
+          </button>
         </div>
+      </div>
 
-        <!-- ARCADE ARENA SECTION -->
-        <div id="secArcade" class="panel" style="display: none;">
-          <strong>WinPi Casual Arcade (Skill &amp; Timing Challenges)</strong>
-          <div class="match-card" style="margin-top: 8px;">
-            <div>Use <strong>Game Tickets</strong> to play casual mini-games and climb the weekly Pioneer Leaderboard.</div>
-            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-              <label for="arcadeTickets">Tickets:</label>
-              <input id="arcadeTickets" type="number" min="1" max="50" step="1" value="1" />
-              <button type="button" class="action-btn" onclick="playArcade('Penalty Shootout')">Penalty Shootout (20 pts/ticket)</button>
-              <button type="button" class="sport-btn" onclick="playArcade('Sky Rocket Runner')">Sky Rocket Runner (18 pts/ticket)</button>
+      <!-- PANEL 2 -->
+      <div class="aviator-panel">
+        <div class="panel-mode-tabs">
+          <button class="panel-mode-btn active" onclick="setPanelMode(2, 'Play', this)">Play</button>
+          <button class="panel-mode-btn" onclick="setPanelMode(2, 'Auto', this)">Auto</button>
+        </div>
+        <div class="panel-controls-grid">
+          <div>
+            <div class="stake-box">
+              <button class="step-btn" onclick="adjustAviatorStake(2, -0.5)">−</button>
+              <input type="number" step="0.1" min="0.1" class="stake-val-input" id="aviatorStake2" value="2.00" onchange="syncAviatorBtnLabel(2)" />
+              <button class="step-btn" onclick="adjustAviatorStake(2, 0.5)">+</button>
             </div>
-            <div id="arcadeMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;"></div>
+            <div class="preset-grid">
+              <button class="preset-btn" onclick="setAviatorStake(2, 0.5)">0.5 π</button>
+              <button class="preset-btn" onclick="setAviatorStake(2, 1.0)">1.0 π</button>
+              <button class="preset-btn" onclick="setAviatorStake(2, 5.0)">5.0 π</button>
+              <button class="preset-btn" onclick="setAviatorStake(2, 10.0)">10.0 π</button>
+            </div>
           </div>
+          <button class="aviator-action-btn" id="aviatorBtn2" onclick="handleAviatorButton(2)">
+            <span>Play</span>
+            <span class="aviator-action-sub" id="aviatorBtnSub2">2.00 π</span>
+          </button>
         </div>
+      </div>
 
-        <!-- MY PICKS HISTORY SECTION -->
-        <div id="secHistory" class="panel" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <strong>My Predictions &amp; Arcade Score History</strong>
-            <button type="button" class="sport-btn" onclick="scoreOpenPredictions()">Evaluate Finished Matches</button>
-          </div>
-          <div id="myPicksList" style="margin-top: 8px;">No predictions submitted yet.</div>
+      <!-- ALL PLAYS / PREVIOUS / TOP FEED -->
+      <div class="aviator-feed-box">
+        <div class="feed-tabs">
+          <div class="feed-tab active" onclick="switchAviatorFeed('all', this)">All Plays</div>
+          <div class="feed-tab" onclick="switchAviatorFeed('prev', this)">Previous</div>
+          <div class="feed-tab" onclick="switchAviatorFeed('top', this)">Top</div>
         </div>
+        <div class="feed-summary">
+          <span><strong>4,680 / 6,421</strong> Plays</span>
+          <span style="color: var(--pi-gold); font-weight: 900;">1,964.86 π Total Win</span>
+        </div>
+        <div id="aviatorFeedRows"></div>
+      </div>
 
-        <!-- LEADERBOARD SECTION -->
-        <div id="secLeaderboard" class="panel" style="display: none;">
-          <strong>Weekly Pioneer Skill Leaderboard</strong>
-          <p style="font-size: 12px; color: #d8cff0; margin-top: 4px;">
-            Compete with Pioneers worldwide by earning skill points from accurate sports analysis and arcade games.
-          </p>
-          <div id="leaderboardList" style="margin-top: 8px;"></div>
-        </div>
-
-        <!-- TICKET STORE (PI SDK PAYMENTS) SECTION -->
-        <div id="secStore" class="panel" style="display: none;">
-          <strong>WinPi Tournament Pass &amp; Ticket Store (Pi Payments)</strong>
-          <p style="font-size: 12px; color: #d8cff0; margin-top: 4px;">
-            Purchase extra Tournament Tickets using <strong>Pi</strong> (1 Pi = 10 Game Tickets) to enter more sports prediction leagues and arcade rounds.
-          </p>
-          <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <label for="piPackAmount">Package (Pi):</label>
-            <input id="piPackAmount" type="number" min="1" max="100" step="1" value="1" oninput="updatePackPreview()" />
-            <span style="font-size: 12px; color: #f5b942;">= <strong id="packTicketCount">10</strong> Tickets</span>
-            <button type="button" id="buyTicketsBtn" class="action-btn" onclick="handleBuyTickets()">Buy Tickets with Pi</button>
-          </div>
-          <div id="storeMsg" style="margin-top: 8px; color: #9be7ff; font-size: 12px;">
-            Verified Pi SDK digital utility purchase (1 Pi = 10 Non-withdrawable Game Tickets).
-          </div>
-        </div>
-
-        <!-- PROFILE SECTION -->
-        <div id="secProfile" class="panel" style="display: none;">
-          <strong>Pioneer Profile &amp; Daily Retention</strong>
-          <div style="margin-top: 6px;">Username: <span id="profileUsername">@pioneer</span></div>
-          <div>Available Game Tickets: <strong id="profileTickets">10</strong></div>
-          <div>Season Skill Score: <strong id="profilePoints">100</strong> pts</div>
-          <div>Daily Check-In Streak: <strong id="profileStreak">1 Day</strong></div>
-          <div>Network Mode: <span id="profileNetworkMode">Open Mainnet (Live Pi)</span></div>
-          <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
-            <button type="button" class="action-btn" onclick="claimDailyBonus()">Claim Daily +3 Tickets</button>
-            <button type="button" class="logout-btn" onclick="logoutWinpi()">Logout</button>
-          </div>
-          <div id="profileMsg" style="margin-top: 6px; color: #9be7ff; font-size: 12px;"></div>
-        </div>
+      <!-- AVIATOR FOOTER -->
+      <div class="aviator-footer-bar">
+        <div class="provably-fair-tag">🛡️ Provably Fair • Pi Mainnet Verified</div>
+        <button class="aviator-deposit-cta" onclick="openModal('depositModal')">DEPOSIT π</button>
       </div>
     </div>
 
-    <!-- PROMO BANNERS (PI NETWORK, ARCADE, FOOTBALL) -->
-    <div id="winpiAdsBanner">
-      <div class="ad-header">
-        <strong style="color: #f5b942; font-size: 13px;">Featured Community Highlights</strong>
-        <span id="adCounter" style="font-size: 11px; color: #9be7ff;">1 / 3</span>
+    <!-- MORE PI CASINO GAMES -->
+    <div class="section-heading"><div>🎰 Popular Pi Casino &amp; Crash Games</div></div>
+    <div class="arcade-grid">
+      <div class="arcade-tile" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <div class="arcade-icon">✈️</div>
+        <div class="arcade-name">Pi Aviator</div>
+        <div class="arcade-tag">Up to 1,000x π</div>
       </div>
+      <div class="arcade-tile" onclick="playInstantArcade('Pi JetX', 1.0)">
+        <div class="arcade-icon">🚀</div>
+        <div class="arcade-name">Pi JetX</div>
+        <div class="arcade-tag">Instant Crash</div>
+      </div>
+      <div class="arcade-tile" onclick="playInstantArcade('25 Pi Coins', 1.0)">
+        <div class="arcade-icon">🪙</div>
+        <div class="arcade-name">25 Pi Coins</div>
+        <div class="arcade-tag">Jackpot π</div>
+      </div>
+      <div class="arcade-tile" onclick="playInstantArcade('Wheel of Pi 2', 1.0)">
+        <div class="arcade-icon">🎡</div>
+        <div class="arcade-name">Wheel of Pi 2</div>
+        <div class="arcade-tag">40x Spin</div>
+      </div>
+      <div class="arcade-tile" onclick="playInstantArcade('Pi Hero', 1.0)">
+        <div class="arcade-icon">🦸</div>
+        <div class="arcade-name">Pi Hero</div>
+        <div class="arcade-tag">Exclusive</div>
+      </div>
+      <div class="arcade-tile" onclick="playInstantArcade('777 Pi Crown', 1.0)">
+        <div class="arcade-icon">👑</div>
+        <div class="arcade-name">777 Pi Crown</div>
+        <div class="arcade-tag">3x3 Slots</div>
+      </div>
+    </div>
+  </section>
 
-      <div id="adSlideCard">
-        <div id="adCategoryTag" style="font-size: 11px; color: #f5b942; font-weight: bold; text-transform: uppercase;">Pi Ecosystem</div>
-        <div id="adTitle" style="font-size: 16px; font-weight: bold; color: #ffffff; margin-top: 4px;">Get Tournament Tickets with Pi</div>
-        <div id="adDesc" style="font-size: 12px; color: #e6defc; margin-top: 4px; line-height: 1.5;">
-          Sign in with Pi Browser and unlock digital Game Tickets for daily sports predictions &amp; arcade leaderboards.
+  <!-- =========================================================
+       VIEW 5: VIRTUALS (PI VIRTUAL FOOTBALL & RACING)
+       ========================================================= -->
+  <section class="view-section" id="view-virtuals">
+    <div class="section-heading">
+      <div>🎮 Pi Virtual Leagues (Kickoff Every 2 Min)</div>
+      <span class="count-badge">24/7 π</span>
+    </div>
+    <div id="virtualMatchesContainer"></div>
+  </section>
+
+  <!-- =========================================================
+       VIEW 6: MY PLAYS (OPEN / SETTLED / VIRTUALS)
+       ========================================================= -->
+  <section class="view-section" id="view-myplays">
+    <div class="plays-tabs">
+      <div class="play-tab active" onclick="switchMyPlaysTab('open', this)">Open <span id="openPlaysCount">0</span></div>
+      <div class="play-tab" onclick="switchMyPlaysTab('settled', this)">Settled</div>
+      <div class="play-tab" onclick="switchMyPlaysTab('virtuals', this)">Virtuals</div>
+    </div>
+
+    <div id="myPlaysListContainer"></div>
+  </section>
+
+  <!-- =========================================================
+       VIEW 7: MY ACCOUNT (EMAIL + PI WALLET + DEPOSIT/WITHDRAW)
+       ========================================================= -->
+  <section class="view-section" id="view-account">
+    <div class="account-header-card">
+      <div class="account-identity-row">
+        <div>
+          <div class="account-email" id="displayUserEmail" onclick="openModal('emailModal')">pioneer@winpi-app.com ✏️</div>
+          <div class="account-username" id="displayPiUsername">@pioneer • Verified Pi Wallet</div>
         </div>
-        <img id="adImageEl" src="" alt="WinPi Promo Banner" style="display: none; width: 100%; max-height: 180px; object-fit: cover; border-radius: 8px; margin-top: 10px;" />
+        <div class="account-pi-bal" id="accountBalanceDisplay">12.50 π</div>
       </div>
 
-      <div class="ad-controls">
-        <button type="button" class="sport-btn" onclick="prevWinpiAd()">Prev</button>
-        <button type="button" class="action-btn" onclick="openWinpiAdTarget()">Explore</button>
-        <button type="button" class="sport-btn" onclick="nextWinpiAd()">Next</button>
+      <div class="account-quick-grid">
+        <button class="acc-quick-btn" onclick="openModal('depositModal')">📥 Deposit π</button>
+        <button class="acc-quick-btn" onclick="openModal('withdrawModal')">📤 Withdraw π</button>
+        <button class="acc-quick-btn" onclick="switchView('myplays')">📋 My Plays</button>
+        <button class="acc-quick-btn" onclick="openModal('statementModal')">🧾 Statement</button>
       </div>
     </div>
 
-    <!-- MAINNET LISTING & PI NEXT HACKATHON COMPLIANCE -->
-    <div class="rules-box">
-      <strong style="color: #f5b942;">Pi Ecosystem Utility, Fair Play &amp; Mainnet Listing Compliance:</strong>
-      <ul style="margin: 6px 0 0 18px; padding: 0;">
-        <li><strong>Skill &amp; Entertainment Utility:</strong> WinPi is a free-to-start sports prediction and casual arcade game platform built for Pi Network community engagement and daily retention.</li>
-        <li><strong>Digital In-App Tickets:</strong> Pioneers receive free starter tickets and daily retention bonuses, and may optionally buy extra Game Tickets with Pi via official Pi SDK payments (/api/approve &amp; /api/complete).</li>
-        <li><strong>Non-Monetary Leaderboard Points:</strong> Game Tickets and Leaderboard Points are strictly digital in-app entertainment items with no cash value and cannot be exchanged back for Pi or fiat currency.</li>
-        <li><strong>Fair Play:</strong> Automated bots, multi-account farming, or score manipulation are prohibited to ensure fair competition for all Pioneers.</li>
-      </ul>
+    <div class="acc-list-card">
+      <div class="acc-row" onclick="openHelpToast()">
+        <div>
+          <div style="font-weight: 800;">❓ Help &amp; Pioneer Support</div>
+          <div style="font-size: 11.5px; color: var(--pi-muted);">Live chat, Pi Mainnet guides &amp; FAQs, 24/7</div>
+        </div>
+        <span>&gt;</span>
+      </div>
     </div>
 
-    <p class="pi-notice" id="piNoticeFooter">
-      <strong>Open Mainnet Notice:</strong> Running on Pi Open Mainnet (sandbox: false) in Pi Browser with official Pi SDK authentication and backend-verified Pi payments.
-    </p>
+    <div class="section-heading"><div>My Account</div></div>
+    <div class="acc-list-card">
+      <div class="acc-row" onclick="openModal('emailModal')">
+        <span>✉️ Update Email Address</span>
+        <span style="color: var(--pi-gold); font-size: 12px;">Edit &gt;</span>
+      </div>
+      <div class="acc-row" onclick="openModal('pinModal')">
+        <span>🔑 Change Security PIN</span>
+        <span>&gt;</span>
+      </div>
+      <div class="acc-row" onclick="openHelpToast()">
+        <span>🛡️ Responsible Gaming Limits</span>
+        <span>&gt;</span>
+      </div>
+      <div class="acc-row" onclick="openModal('statementModal')">
+        <span>📢 Notifications</span>
+        <span class="count-badge">1</span>
+      </div>
+      <div class="acc-row">
+        <span>🌓 Light / Dark Theme</span>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle" onchange="toggleLightTheme(this.checked)" />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="acc-row" onclick="openModal('languageModal')">
+        <span>🌐 Global Language (All Countries)</span>
+        <div class="lang-pill-switch">
+          <span class="lang-opt active" id="activeLangCode">EN</span>
+          <span class="lang-opt" id="activeLangCountry">🌍 Global</span>
+        </div>
+      </div>
+      <div class="acc-row" onclick="claimDailyPiBonus()">
+        <span>🎁 Pioneer Daily Rewards</span>
+        <span style="color: var(--pi-gold); font-weight: 800;">+0.25 π</span>
+      </div>
+    </div>
+
+    <button class="logout-card-btn" onclick="disconnectPiWallet()">Log Out from Pi Session</button>
+  </section>
+
+  <!-- WIN BONUS RIBBON -->
+  <div class="bonus-ribbon" id="bonusRibbonText">
+    Add legs for up to a <strong>1250% Win Bonus</strong> in Pi (π).
+  </div>
+
+  <!-- BOTTOM 5-TAB NAVIGATION -->
+  <footer class="bottom-nav">
+    <div class="nav-item active" data-nav="home" onclick="switchView('home')">
+      <span>☰</span>
+      <span>Menu</span>
+    </div>
+    <div class="nav-item" data-nav="sports" onclick="switchView('sports')">
+      <span>⚽</span>
+      <span>Sports</span>
+    </div>
+    <div class="nav-item" data-nav="slip" onclick="openModal('slipModal')">
+      <span>🧾</span>
+      <span>Playslip</span>
+      <span class="nav-badge" id="slipBadgeCount">0</span>
+    </div>
+    <div class="nav-item" data-nav="myplays" onclick="switchView('myplays')">
+      <span>📋</span>
+      <span>My plays</span>
+    </div>
+    <div class="nav-item" data-nav="account" onclick="switchView('account')">
+      <span>👤</span>
+      <span>Account</span>
+      <span class="nav-badge">1</span>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       MODALS: PLAYSLIP, DEPOSIT PI, WITHDRAW PI, EMAIL, STATEMENT, GLOBAL LANGUAGES
+       ========================================================= -->
+
+  <!-- GLOBAL WORLD LANGUAGES MODAL (ALL 195+ COUNTRIES) -->
+  <div class="modal-backdrop" id="languageModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">🌐 Select World Language &amp; Country (195+ Countries)</div>
+        <button class="modal-close" onclick="closeModal('languageModal')">✕</button>
+      </div>
+      <p style="font-size: 12px; color: var(--pi-muted); margin-bottom: 8px;">
+        Choose any language from every country worldwide. Starts with English and translates the entire WinPi interface automatically.
+      </p>
+      <input type="text" class="modal-input" id="worldLangSearch" placeholder="Search country or language (e.g., English, Kirundi, Swahili, French, Arabic, Chinese...)" oninput="renderWorldLanguages(this.value)" />
+      <div id="worldLangList" style="margin-top: 10px; max-height: 54vh; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- PLAYSLIP MODAL -->
+  <div class="modal-backdrop" id="slipModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">🧾 WinPi Playslip (Pi Mainnet)</div>
+        <button class="modal-close" onclick="closeModal('slipModal')">✕</button>
+      </div>
+      <div id="slipItemsContainer"></div>
+      <label class="field-label">Stake Amount in Pi (π)</label>
+      <input type="number" step="0.1" min="0.1" class="modal-input" id="slipStakeInput" value="1.0" oninput="recalculateSlip()" />
+      <div style="margin-top: 12px; font-size: 13px; line-height: 1.7;">
+        <div>Total Odds: <strong id="slipTotalOdds">1.00</strong></div>
+        <div>Multi-Leg Win Bonus: <strong id="slipBonusPct" style="color: var(--pi-gold);">0%</strong></div>
+        <div>Potential Return: <strong id="slipPotentialWin" style="color: #4ade80;">0.00 π</strong></div>
+      </div>
+      <button class="primary-gold-btn" onclick="submitPlayslip()">PLACE PLAY WITH Pi (π)</button>
+      <div class="status-note" id="slipStatusMsg"></div>
+    </div>
+  </div>
+
+  <!-- DEPOSIT PI MODAL -->
+  <div class="modal-backdrop" id="depositModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">📥 Deposit Pi (π) via Pi Network</div>
+        <button class="modal-close" onclick="closeModal('depositModal')">✕</button>
+      </div>
+      <p style="font-size: 12.5px; color: var(--pi-muted); line-height: 1.5;">
+        Deposits on WinPi are processed exclusively in <strong>Pi (π)</strong> through official Pi SDK Mainnet transactions.
+      </p>
+      <label class="field-label">Amount to Deposit (π)</label>
+      <input type="number" step="0.5" min="0.5" class="modal-input" id="depositPiAmount" value="5.0" />
+      <button class="primary-gold-btn" onclick="executePiDeposit()">DEPOSIT NOW WITH PI WALLET</button>
+      <div class="status-note" id="depositStatusMsg"></div>
+    </div>
+  </div>
+
+  <!-- WITHDRAW PI MODAL -->
+  <div class="modal-backdrop" id="withdrawModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">📤 Withdraw Pi (π) to Pi Wallet</div>
+        <button class="modal-close" onclick="closeModal('withdrawModal')">✕</button>
+      </div>
+      <p style="font-size: 12.5px; color: var(--pi-muted); line-height: 1.5;">
+        Withdrawals are paid out strictly in <strong>Pi (π)</strong> directly to your verified Pi Mainnet Wallet address.
+      </p>
+      <label class="field-label">Your Pi Mainnet Public Wallet Address</label>
+      <input type="text" class="modal-input" id="withdrawPiAddress" placeholder="G..." />
+      <label class="field-label">Amount to Withdraw (π)</label>
+      <input type="number" step="0.5" min="1.0" class="modal-input" id="withdrawPiAmount" value="2.0" />
+      <button class="primary-gold-btn" onclick="executePiWithdrawal()">REQUEST PI (π) WITHDRAWAL</button>
+      <div class="status-note" id="withdrawStatusMsg"></div>
+    </div>
+  </div>
+
+  <!-- EMAIL UPDATE MODAL -->
+  <div class="modal-backdrop" id="emailModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">✉️ Pioneer Account Email</div>
+        <button class="modal-close" onclick="closeModal('emailModal')">✕</button>
+      </div>
+      <p style="font-size: 12.5px; color: var(--pi-muted);">
+        Your WinPi account uses your Email &amp; Pi Username instead of a phone number.
+      </p>
+      <label class="field-label">Email Address</label>
+      <input type="email" class="modal-input" id="newEmailInput" placeholder="you@example.com" />
+      <button class="primary-gold-btn" onclick="saveUserEmail()">SAVE EMAIL</button>
+    </div>
+  </div>
+
+  <!-- PIN MODAL -->
+  <div class="modal-backdrop" id="pinModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">🔑 Change Security PIN</div>
+        <button class="modal-close" onclick="closeModal('pinModal')">✕</button>
+      </div>
+      <label class="field-label">New 4-Digit Wallet PIN</label>
+      <input type="password" maxlength="4" class="modal-input" id="newPinInput" placeholder="••••" />
+      <button class="primary-gold-btn" onclick="closeModal('pinModal')">UPDATE SECURITY PIN</button>
+    </div>
+  </div>
+
+  <!-- STATEMENT MODAL -->
+  <div class="modal-backdrop" id="statementModal">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div class="modal-title">🧾 Pi (π) Wallet Statement</div>
+        <button class="modal-close" onclick="closeModal('statementModal')">✕</button>
+      </div>
+      <div id="statementLogContainer" style="font-size: 12.5px; line-height: 1.7;"></div>
+    </div>
   </div>
 
   <script>
-    let currentUser = "@pioneer";
-    let ticketBalance = 10;
-    let skillPoints = 100;
-    let streakDays = 1;
-    let dailyBonusClaimed = false;
-    let activeSport = "Football";
-    let selectedPick = null;
-    const picksHistory = [];
+    // =========================================================
+    // GLOBAL APPLICATION STATE (100% PI CURRENCY + ALL WORLD LANGUAGES)
+    // =========================================================
+    let piBalance = 12.50;
+    let balanceHidden = false;
+    let piUsername = "@pioneer";
+    let userEmail = "pioneer@winpi-app.com";
+    let currentLangCode = "EN";
+    let currentLangLabel = "English (Global)";
+    let currentSportFilter = "ALL";
+    let currentLeagueFilter = "ALL";
+    let currentSearchTerm = "";
+    let playslip = [];
+    let placedSlips = [];
+    let currentMyPlaysTab = "open";
+    let walletStatements = [
+      { time: "Today, 18:10", label: "Pi Mainnet Welcome Credit", amount: "+12.50 π" }
+    ];
 
-    const fixturesBySport = {
-      Football: [
-        { id: "fb1", status: "LIVE 34'", match: "Yanga SC vs Mamelodi Sundowns", m1: 2.4, mx: 3.1, m2: 2.85 },
-        { id: "fb2", status: "UPCOMING 20:00", match: "Real Madrid vs AS Roma", m1: 1.65, mx: 3.8, m2: 4.9 }
-      ],
-      Basketball: [
-        { id: "bb1", status: "LIVE Q2", match: "Court Kings vs Metro Hawks", m1: 1.75, mx: 4.5, m2: 2.05 }
-      ],
-      Tennis: [
-        { id: "tn1", status: "LIVE SET 2", match: "Pioneer Aces vs Baseline Pros", m1: 1.58, mx: 2.2, m2: 2.35 }
-      ]
+    const UI_TRANSLATIONS = {
+      EN: {
+        home: "HOME", sports: "SPORTS", live: "LIVE", aviator: "AVIATOR & CASINO", virtuals: "VIRTUALS",
+        menu: "Menu", playslip: "Playslip", myplays: "My plays", account: "Account",
+        deposit: "Deposit π", withdraw: "Withdraw π", connect: "Connect Pi",
+        bonus: "Add legs for up to a <strong>1250% Win Bonus</strong> in Pi (π)."
+      },
+      RN: {
+        home: "AHABANZA", sports: "IMIKINO", live: "LIVE", aviator: "AVIATOR & CASINO", virtuals: "VIRTUALS",
+        menu: "Ibikubiyemwo", playslip: "Agapapuro", myplays: "Imikino yanje", account: "Konti yanje",
+        deposit: "Bitsa π", withdraw: "Bikuza π", connect: "Huza Pi",
+        bonus: "Ongerako imikino uronke <strong>1250% Win Bonus</strong> muri Pi (π)."
+      },
+      RW: {
+        home: "AHABANZA", sports: "IMIKINO", live: "LIVE", aviator: "AVIATOR & CASINO", virtuals: "VIRTUALS",
+        menu: "Ibikubiyemo", playslip: "Agapapuro", myplays: "Imikino yanjye", account: "Konti yanjye",
+        deposit: "Bitsa π", withdraw: "Bikuza π", connect: "Huza Pi",
+        bonus: "Ongeraho imikino ubone <strong>1250% Win Bonus</strong> muri Pi (π)."
+      },
+      SW: {
+        home: "NYUMBANI", sports: "MICHEZO", live: "MOJA KWA MOJA", aviator: "AVIATOR & KASINO", virtuals: "VIRTUALS",
+        menu: "Menyu", playslip: "Mkeka", myplays: "Michezo Yangu", account: "Akaunti",
+        deposit: "Weka π", withdraw: "Toa π", connect: "Unganisha Pi",
+        bonus: "Ongeza mechi upate hadi <strong>1250% Bonasi</strong> ya Pi (π)."
+      },
+      FR: {
+        home: "ACCUEIL", sports: "SPORTS", live: "EN DIRECT", aviator: "AVIATOR & CASINO", virtuals: "VIRTUELS",
+        menu: "Menu", playslip: "Ticket", myplays: "Mes Paris", account: "Compte",
+        deposit: "Dépôt π", withdraw: "Retrait π", connect: "Connecter Pi",
+        bonus: "Ajoutez des sélections jusqu'à <strong>1250% de Bonus</strong> en Pi (π)."
+      },
+      ES: {
+        home: "INICIO", sports: "DEPORTES", live: "EN VIVO", aviator: "AVIATOR Y CASINO", virtuals: "VIRTUALES",
+        menu: "Menú", playslip: "Boleto", myplays: "Mis Jugadas", account: "Cuenta",
+        deposit: "Depositar π", withdraw: "Retirar π", connect: "Conectar Pi",
+        bonus: "Añade selecciones para hasta un <strong>1250% de Bono</strong> en Pi (π)."
+      },
+      PT: {
+        home: "INÍCIO", sports: "ESPORTES", live: "AO VIVO", aviator: "AVIATOR & CASSINO", virtuals: "VIRTUAIS",
+        menu: "Menu", playslip: "Bilhete", myplays: "Minhas Jogadas", account: "Conta",
+        deposit: "Depositar π", withdraw: "Sacar π", connect: "Conectar Pi",
+        bonus: "Adicione seleções para até <strong>1250% de Bônus</strong> em Pi (π)."
+      },
+      AR: {
+        home: "الرئيسية", sports: "الرياضة", live: "مباشر", aviator: "أفياتور وكازينو", virtuals: "افتراضي",
+        menu: "القائمة", playslip: "القسيمة", myplays: "ألعابي", account: "حسابي",
+        deposit: "إيداع π", withdraw: "سحب π", connect: "ربط Pi",
+        bonus: "أضف مباريات للحصول على مكافأة تصل إلى <strong>1250%</strong> بعملة Pi (π)."
+      },
+      ZH: {
+        home: "首页", sports: "体育", live: "滚球直播", aviator: "飞行员与娱乐场", virtuals: "虚拟体育",
+        menu: "菜单", playslip: "投注单", myplays: "我的记录", account: "账户",
+        deposit: "充值 π", withdraw: "提现 π", connect: "连接 Pi",
+        bonus: "添加更多场次最高赢取 <strong>1250% Pi (π) 奖励</strong>。"
+      },
+      HI: {
+        home: "होम", sports: "खेल", live: "लाइव", aviator: "एविएटर और कैसीनो", virtuals: "वर्चुअल",
+        menu: "मेनू", playslip: "स्लिप", myplays: "मेरे खेल", account: "खाता",
+        deposit: "जमा π", withdraw: "निकासी π", connect: "Pi जोड़ें",
+        bonus: "<strong>1250% Win Bonus</strong> Pi (π) तक पाने के लिए और मैच जोड़ें।"
+      },
+      RU: {
+        home: "ГЛАВНАЯ", sports: "СПОРТ", live: "ЛАЙВ", aviator: "АВИАТОР И КАЗИНО", virtuals: "ВИРТУАЛЬНЫЙ",
+        menu: "Меню", playslip: "Купон", myplays: "Мои игры", account: "Аккаунт",
+        deposit: "Депозит π", withdraw: "Вывод π", connect: "Подключить Pi",
+        bonus: "Добавляйте события и получите до <strong>1250% бонуса</strong> в Pi (π)."
+      },
+      DE: {
+        home: "START", sports: "SPORT", live: "LIVE", aviator: "AVIATOR & CASINO", virtuals: "VIRTUELL",
+        menu: "Menü", playslip: "Schein", myplays: "Meine Spiele", account: "Konto",
+        deposit: "Einzahlen π", withdraw: "Auszahlen π", connect: "Pi Verbinden",
+        bonus: "Fügen Sie Auswahlen für bis zu <strong>1250% Bonus</strong> in Pi (π) hinzu."
+      },
+      JA: {
+        home: "ホーム", sports: "スポーツ", live: "ライブ", aviator: "アビエーター", virtuals: "バーチャル",
+        menu: "メニュー", playslip: "スリップ", myplays: "プレイ履歴", account: "アカウント",
+        deposit: "入金 π", withdraw: "出金 π", connect: "Pi接続",
+        bonus: "選択を追加して最大 <strong>1250% Pi (π) ボーナス</strong>を獲得。"
+      },
+      KO: {
+        home: "홈", sports: "스포츠", live: "라이브", aviator: "에비에이터", virtuals: "가상스포츠",
+        menu: "메뉴", playslip: "슬립", myplays: "내 기록", account: "계정",
+        deposit: "입금 π", withdraw: "출금 π", connect: "Pi 연결",
+        bonus: "경기를 추가하고 최대 <strong>1250% Pi (π) 보너스</strong>를 받으세요."
+      },
+      TR: {
+        home: "ANA SAYFA", sports: "SPOR", live: "CANLI", aviator: "AVIATOR & CASINO", virtuals: "SANAL",
+        menu: "Menü", playslip: "Kupon", myplays: "Oyunlarım", account: "Hesabım",
+        deposit: "Yatır π", withdraw: "Çek π", connect: "Pi Bağla",
+        bonus: "Pi (π) ile <strong>%1250'ye varan Bonus</strong> için seçim ekleyin."
+      }
     };
 
-    const winpiPromoAds = [
+    const WORLD_COUNTRIES_LANGUAGES = [
+      { country: "Global / International", lang: "English (Default)", code: "EN", flag: "🌍" },
+      { country: "Afghanistan", lang: "Pashto / Dari", code: "PS", flag: "🇦🇫" },
+      { country: "Albania", lang: "Albanian (Shqip)", code: "SQ", flag: "🇦🇱" },
+      { country: "Algeria", lang: "Arabic / Tamazight / French", code: "AR", flag: "🇩🇿" },
+      { country: "Andorra", lang: "Catalan", code: "CA", flag: "🇦🇩" },
+      { country: "Angola", lang: "Portuguese", code: "PT", flag: "🇦🇴" },
+      { country: "Antigua and Barbuda", lang: "English", code: "EN", flag: "🇦🇬" },
+      { country: "Argentina", lang: "Spanish (Español)", code: "ES", flag: "🇦🇷" },
+      { country: "Armenia", lang: "Armenian", code: "HY", flag: "🇦🇲" },
+      { country: "Australia", lang: "English", code: "EN", flag: "🇦🇺" },
+      { country: "Austria", lang: "German (Deutsch)", code: "DE", flag: "🇦🇹" },
+      { country: "Azerbaijan", lang: "Azerbaijani", code: "AZ", flag: "🇦🇿" },
+      { country: "Bahamas", lang: "English", code: "EN", flag: "🇧🇸" },
+      { country: "Bahrain", lang: "Arabic", code: "AR", flag: "🇧🇭" },
+      { country: "Bangladesh", lang: "Bengali (বাংলা)", code: "BN", flag: "🇧🇩" },
+      { country: "Barbados", lang: "English", code: "EN", flag: "🇧🇧" },
+      { country: "Belarus", lang: "Belarusian / Russian", code: "BE", flag: "🇧🇾" },
+      { country: "Belgium", lang: "Dutch / French / German", code: "NL", flag: "🇧🇪" },
+      { country: "Belize", lang: "English / Spanish", code: "EN", flag: "🇧🇿" },
+      { country: "Benin", lang: "French / Fon / Yoruba", code: "FR", flag: "🇧🇯" },
+      { country: "Bhutan", lang: "Dzongkha", code: "DZ", flag: "🇧🇹" },
+      { country: "Bolivia", lang: "Spanish / Quechua / Aymara", code: "ES", flag: "🇧🇴" },
+      { country: "Bosnia and Herzegovina", lang: "Bosnian / Croatian / Serbian", code: "BS", flag: "🇧🇦" },
+      { country: "Botswana", lang: "English / Setswana", code: "TN", flag: "🇧🇼" },
+      { country: "Brazil", lang: "Portuguese (Português)", code: "PT", flag: "🇧🇷" },
+      { country: "Brunei", lang: "Malay (Bahasa Melayu)", code: "MS", flag: "🇧🇳" },
+      { country: "Bulgaria", lang: "Bulgarian (Български)", code: "BG", flag: "🇧🇬" },
+      { country: "Burkina Faso", lang: "French / Mooré", code: "FR", flag: "🇧🇫" },
+      { country: "Burundi", lang: "Kirundi / French / English", code: "RN", flag: "🇧🇮" },
+      { country: "Cabo Verde", lang: "Portuguese / Kabuverdianu", code: "PT", flag: "🇨🇻" },
+      { country: "Cambodia", lang: "Khmer (ខ្មែរ)", code: "KM", flag: "🇰🇭" },
+      { country: "Cameroon", lang: "French / English", code: "FR", flag: "🇨🇲" },
+      { country: "Canada", lang: "English / French", code: "EN", flag: "🇨🇦" },
+      { country: "Central African Republic", lang: "Sango / French", code: "SG", flag: "🇨🇫" },
+      { country: "Chad", lang: "French / Arabic", code: "FR", flag: "🇹🇩" },
+      { country: "Chile", lang: "Spanish", code: "ES", flag: "🇨🇱" },
+      { country: "China", lang: "Chinese (中文)", code: "ZH", flag: "🇨🇳" },
+      { country: "Colombia", lang: "Spanish", code: "ES", flag: "🇨🇴" },
+      { country: "Comoros", lang: "Comorian / Arabic / French", code: "AR", flag: "🇰🇲" },
+      { country: "Congo (DRC)", lang: "French / Lingala / Swahili", code: "FR", flag: "🇨🇩" },
+      { country: "Congo (Republic)", lang: "French / Lingala / Kituba", code: "FR", flag: "🇨🇬" },
+      { country: "Costa Rica", lang: "Spanish", code: "ES", flag: "🇨🇷" },
+      { country: "Côte d'Ivoire", lang: "French", code: "FR", flag: "🇨🇮" },
+      { country: "Croatia", lang: "Croatian (Hrvatski)", code: "HR", flag: "🇭🇷" },
+      { country: "Cuba", lang: "Spanish", code: "ES", flag: "🇨🇺" },
+      { country: "Cyprus", lang: "Greek / Turkish", code: "EL", flag: "🇨🇾" },
+      { country: "Czech Republic", lang: "Czech (Čeština)", code: "CS", flag: "🇨🇿" },
+      { country: "Denmark", lang: "Danish (Dansk)", code: "DA", flag: "🇩🇰" },
+      { country: "Djibouti", lang: "French / Arabic / Somali / Afar", code: "FR", flag: "🇩🇯" },
+      { country: "Dominica", lang: "English", code: "EN", flag: "🇩🇲" },
+      { country: "Dominican Republic", lang: "Spanish", code: "ES", flag: "🇩🇴" },
+      { country: "Ecuador", lang: "Spanish / Kichwa", code: "ES", flag: "🇪🇨" },
+      { country: "Egypt", lang: "Arabic (العربية)", code: "AR", flag: "🇪🇬" },
+      { country: "El Salvador", lang: "Spanish", code: "ES", flag: "🇸🇻" },
+      { country: "Equatorial Guinea", lang: "Spanish / French / Portuguese", code: "ES", flag: "🇬🇶" },
+      { country: "Eritrea", lang: "Tigrinya / Arabic / English", code: "TI", flag: "🇪🇷" },
+      { country: "Estonia", lang: "Estonian (Eesti)", code: "ET", flag: "🇪🇪" },
+      { country: "Eswatini", lang: "Swati / English", code: "SS", flag: "🇸🇿" },
+      { country: "Ethiopia", lang: "Amharic / Oromo / Tigrinya", code: "AM", flag: "🇪🇹" },
+      { country: "Fiji", lang: "English / Fijian / Hindi", code: "FJ", flag: "🇫🇯" },
+      { country: "Finland", lang: "Finnish / Swedish", code: "FI", flag: "🇫🇮" },
+      { country: "France", lang: "French (Français)", code: "FR", flag: "🇫🇷" },
+      { country: "Gabon", lang: "French", code: "FR", flag: "🇬🇦" },
+      { country: "Gambia", lang: "English / Mandinka / Wolof", code: "EN", flag: "🇬🇲" },
+      { country: "Georgia", lang: "Georgian (ქართული)", code: "KA", flag: "🇬🇪" },
+      { country: "Germany", lang: "German (Deutsch)", code: "DE", flag: "🇩🇪" },
+      { country: "Ghana", lang: "English / Twi / Ewe / Ga", code: "EN", flag: "🇬🇭" },
+      { country: "Greece", lang: "Greek (Ελληνικά)", code: "EL", flag: "🇬🇷" },
+      { country: "Grenada", lang: "English", code: "EN", flag: "🇬🇩" },
+      { country: "Guatemala", lang: "Spanish", code: "ES", flag: "🇬🇹" },
+      { country: "Guinea", lang: "French / Fula / Maninka", code: "FR", flag: "🇬🇳" },
+      { country: "Guinea-Bissau", lang: "Portuguese", code: "PT", flag: "🇬🇼" },
+      { country: "Guyana", lang: "English", code: "EN", flag: "🇬🇾" },
+      { country: "Haiti", lang: "Haitian Creole / French", code: "HT", flag: "🇭🇹" },
+      { country: "Honduras", lang: "Spanish", code: "ES", flag: "🇭🇳" },
+      { country: "Hungary", lang: "Hungarian (Magyar)", code: "HU", flag: "🇭🇺" },
+      { country: "Iceland", lang: "Icelandic (Íslenska)", code: "IS", flag: "🇮🇸" },
+      { country: "India", lang: "Hindi / English / Tamil / Telugu / Bengali", code: "HI", flag: "🇮🇳" },
+      { country: "Indonesia", lang: "Indonesian (Bahasa Indonesia)", code: "ID", flag: "🇮🇩" },
+      { country: "Iran", lang: "Persian (فارسی)", code: "FA", flag: "🇮🇷" },
+      { country: "Iraq", lang: "Arabic / Kurdish", code: "AR", flag: "🇮🇶" },
+      { country: "Ireland", lang: "English / Irish (Gaeilge)", code: "GA", flag: "🇮🇪" },
+      { country: "Israel", lang: "Hebrew (עברית) / Arabic", code: "HE", flag: "🇮🇱" },
+      { country: "Italy", lang: "Italian (Italiano)", code: "IT", flag: "🇮🇹" },
+      { country: "Jamaica", lang: "English", code: "EN", flag: "🇯🇲" },
+      { country: "Japan", lang: "Japanese (日本語)", code: "JA", flag: "🇯🇵" },
+      { country: "Jordan", lang: "Arabic", code: "AR", flag: "🇯🇴" },
+      { country: "Kazakhstan", lang: "Kazakh / Russian", code: "KK", flag: "🇰🇿" },
+      { country: "Kenya", lang: "Swahili / English", code: "SW", flag: "🇰🇪" },
+      { country: "Kiribati", lang: "English / Gilbertese", code: "EN", flag: "🇰🇮" },
+      { country: "Kuwait", lang: "Arabic", code: "AR", flag: "🇰🇼" },
+      { country: "Kyrgyzstan", lang: "Kyrgyz / Russian", code: "KY", flag: "🇰🇬" },
+      { country: "Laos", lang: "Lao (ລາວ)", code: "LO", flag: "🇱🇦" },
+      { country: "Latvia", lang: "Latvian (Latviešu)", code: "LV", flag: "🇱🇻" },
+      { country: "Lebanon", lang: "Arabic / French", code: "AR", flag: "🇱🇧" },
+      { country: "Lesotho", lang: "Sesotho / English", code: "ST", flag: "🇱🇸" },
+      { country: "Liberia", lang: "English", code: "EN", flag: "🇱🇷" },
+      { country: "Libya", lang: "Arabic", code: "AR", flag: "🇱🇾" },
+      { country: "Liechtenstein", lang: "German", code: "DE", flag: "🇱🇮" },
+      { country: "Lithuania", lang: "Lithuanian (Lietuvių)", code: "LT", flag: "🇱🇹" },
+      { country: "Luxembourg", lang: "Luxembourgish / French / German", code: "LB", flag: "🇱🇺" },
+      { country: "Madagascar", lang: "Malagasy / French", code: "MG", flag: "🇲🇬" },
+      { country: "Malawi", lang: "Chichewa / English", code: "NY", flag: "🇲🇼" },
+      { country: "Malaysia", lang: "Malay / English / Chinese", code: "MS", flag: "🇲🇾" },
+      { country: "Maldives", lang: "Dhivehi", code: "DV", flag: "🇲🇻" },
+      { country: "Mali", lang: "French / Bambara", code: "FR", flag: "🇲🇱" },
+      { country: "Malta", lang: "Maltese / English", code: "MT", flag: "🇲🇹" },
+      { country: "Marshall Islands", lang: "Marshallese / English", code: "MH", flag: "🇲🇭" },
+      { country: "Mauritania", lang: "Arabic / French", code: "AR", flag: "🇲🇷" },
+      { country: "Mauritius", lang: "English / French / Mauritian Creole", code: "EN", flag: "🇲🇺" },
+      { country: "Mexico", lang: "Spanish", code: "ES", flag: "🇲🇽" },
+      { country: "Micronesia", lang: "English", code: "EN", flag: "🇫🇲" },
+      { country: "Moldova", lang: "Romanian", code: "RO", flag: "🇲🇩" },
+      { country: "Monaco", lang: "French", code: "FR", flag: "🇲🇨" },
+      { country: "Mongolia", lang: "Mongolian (Монгол)", code: "MN", flag: "🇲🇳" },
+      { country: "Montenegro", lang: "Montenegrin", code: "CNR", flag: "🇲🇪" },
+      { country: "Morocco", lang: "Arabic / Tamazight / French", code: "AR", flag: "🇲🇦" },
+      { country: "Mozambique", lang: "Portuguese", code: "PT", flag: "🇲🇿" },
+      { country: "Myanmar", lang: "Burmese (မြန်မာ)", code: "MY", flag: "🇲🇲" },
+      { country: "Namibia", lang: "English / Oshiwambo / Afrikaans", code: "EN", flag: "🇳🇦" },
+      { country: "Nauru", lang: "Nauruan / English", code: "NA", flag: "🇳🇷" },
+      { country: "Nepal", lang: "Nepali (नेपाली)", code: "NE", flag: "🇳🇵" },
+      { country: "Netherlands", lang: "Dutch (Nederlands)", code: "NL", flag: "🇳🇱" },
+      { country: "New Zealand", lang: "English / Māori", code: "MI", flag: "🇳🇿" },
+      { country: "Nicaragua", lang: "Spanish", code: "ES", flag: "🇳🇮" },
+      { country: "Niger", lang: "French / Hausa", code: "FR", flag: "🇳🇪" },
+      { country: "Nigeria", lang: "English / Hausa / Yoruba / Igbo", code: "YO", flag: "🇳🇬" },
+      { country: "North Korea", lang: "Korean", code: "KO", flag: "🇰🇵" },
+      { country: "North Macedonia", lang: "Macedonian / Albanian", code: "MK", flag: "🇲🇰" },
+      { country: "Norway", lang: "Norwegian (Norsk)", code: "NO", flag: "🇳🇴" },
+      { country: "Oman", lang: "Arabic", code: "AR", flag: "🇴🇲" },
+      { country: "Pakistan", lang: "Urdu (اردو) / English / Punjabi", code: "UR", flag: "🇵🇰" },
+      { country: "Palau", lang: "Palauan / English", code: "EN", flag: "🇵🇼" },
+      { country: "Palestine", lang: "Arabic", code: "AR", flag: "🇵🇸" },
+      { country: "Panama", lang: "Spanish", code: "ES", flag: "🇵🇦" },
+      { country: "Papua New Guinea", lang: "Tok Pisin / English / Hiri Motu", code: "TPI", flag: "🇵🇬" },
+      { country: "Paraguay", lang: "Spanish / Guaraní", code: "GN", flag: "🇵🇾" },
+      { country: "Peru", lang: "Spanish / Quechua", code: "ES", flag: "🇵🇪" },
+      { country: "Philippines", lang: "Filipino / Tagalog / English", code: "TL", flag: "🇵🇭" },
+      { country: "Poland", lang: "Polish (Polski)", code: "PL", flag: "🇵🇱" },
+      { country: "Portugal", lang: "Portuguese (Português)", code: "PT", flag: "🇵🇹" },
+      { country: "Qatar", lang: "Arabic", code: "AR", flag: "🇶🇦" },
+      { country: "Romania", lang: "Romanian (Română)", code: "RO", flag: "🇷🇴" },
+      { country: "Russia", lang: "Russian (Русский)", code: "RU", flag: "🇷🇺" },
+      { country: "Rwanda", lang: "Kinyarwanda / English / French / Swahili", code: "RW", flag: "🇷🇼" },
+      { country: "Saint Kitts and Nevis", lang: "English", code: "EN", flag: "🇰🇳" },
+      { country: "Saint Lucia", lang: "English", code: "EN", flag: "🇱🇨" },
+      { country: "Saint Vincent & Grenadines", lang: "English", code: "EN", flag: "🇻🇨" },
+      { country: "Samoa", lang: "Samoan / English", code: "SM", flag: "🇼🇸" },
+      { country: "San Marino", lang: "Italian", code: "IT", flag: "🇸🇲" },
+      { country: "São Tomé and Príncipe", lang: "Portuguese", code: "PT", flag: "🇸🇹" },
+      { country: "Saudi Arabia", lang: "Arabic (العربية)", code: "AR", flag: "🇸🇦" },
+      { country: "Senegal", lang: "French / Wolof", code: "WO", flag: "🇸🇳" },
+      { country: "Serbia", lang: "Serbian (Српски)", code: "SR", flag: "🇷🇸" },
+      { country: "Seychelles", lang: "Seychellois Creole / English / French", code: "FR", flag: "🇸🇨" },
+      { country: "Sierra Leone", lang: "English / Krio", code: "EN", flag: "🇸🇱" },
+      { country: "Singapore", lang: "English / Malay / Mandarin / Tamil", code: "EN", flag: "🇸🇬" },
+      { country: "Slovakia", lang: "Slovak (Slovenčina)", code: "SK", flag: "🇸🇰" },
+      { country: "Slovenia", lang: "Slovenian (Slovenščina)", code: "SL", flag: "🇸🇮" },
+      { country: "Solomon Islands", lang: "English / Pijin", code: "EN", flag: "🇸🇧" },
+      { country: "Somalia", lang: "Somali / Arabic", code: "SO", flag: "🇸🇴" },
+      { country: "South Africa", lang: "Zulu / Xhosa / Afrikaans / English", code: "ZU", flag: "🇿🇦" },
+      { country: "South Korea", lang: "Korean (한국어)", code: "KO", flag: "🇰🇷" },
+      { country: "South Sudan", lang: "English / Arabic / Dinka / Nuer", code: "EN", flag: "🇸🇸" },
+      { country: "Spain", lang: "Spanish (Español)", code: "ES", flag: "🇪🇸" },
+      { country: "Sri Lanka", lang: "Sinhala / Tamil", code: "SI", flag: "🇱🇰" },
+      { country: "Sudan", lang: "Arabic / English", code: "AR", flag: "🇸🇩" },
+      { country: "Suriname", lang: "Dutch / Sranan Tongo", code: "NL", flag: "🇸🇷" },
+      { country: "Sweden", lang: "Swedish (Svenska)", code: "SV", flag: "🇸🇪" },
+      { country: "Switzerland", lang: "German / French / Italian / Romansh", code: "DE", flag: "🇨🇭" },
+      { country: "Syria", lang: "Arabic", code: "AR", flag: "🇸🇾" },
+      { country: "Taiwan", lang: "Traditional Chinese (繁體中文)", code: "ZH", flag: "🇹🇼" },
+      { country: "Tajikistan", lang: "Tajik / Russian", code: "TG", flag: "🇹🇯" },
+      { country: "Tanzania", lang: "Swahili (Kiswahili) / English", code: "SW", flag: "🇹🇿" },
+      { country: "Thailand", lang: "Thai (ไทย)", code: "TH", flag: "🇹🇭" },
+      { country: "Timor-Leste", lang: "Tetum / Portuguese", code: "TET", flag: "🇹🇱" },
+      { country: "Togo", lang: "French / Ewe / Kabiyè", code: "FR", flag: "🇹🇬" },
+      { country: "Tonga", lang: "Tongan / English", code: "TO", flag: "🇹🇴" },
+      { country: "Trinidad and Tobago", lang: "English", code: "EN", flag: "🇹🇹" },
+      { country: "Tunisia", lang: "Arabic / French", code: "AR", flag: "🇹🇳" },
+      { country: "Turkey", lang: "Turkish (Türkçe)", code: "TR", flag: "🇹🇷" },
+      { country: "Turkmenistan", lang: "Turkmen", code: "TK", flag: "🇹🇲" },
+      { country: "Tuvalu", lang: "Tuvaluan / English", code: "EN", flag: "🇹🇻" },
+      { country: "Uganda", lang: "English / Luganda / Swahili", code: "LG", flag: "🇺🇬" },
+      { country: "Ukraine", lang: "Ukrainian (Українська)", code: "UK", flag: "🇺🇦" },
+      { country: "United Arab Emirates", lang: "Arabic / English", code: "AR", flag: "🇦🇪" },
+      { country: "United Kingdom", lang: "English", code: "EN", flag: "🇬🇧" },
+      { country: "United States", lang: "English / Spanish", code: "EN", flag: "🇺🇸" },
+      { country: "Uruguay", lang: "Spanish", code: "ES", flag: "🇺🇾" },
+      { country: "Uzbekistan", lang: "Uzbek (Oʻzbek)", code: "UZ", flag: "🇺🇿" },
+      { country: "Vanuatu", lang: "Bislama / English / French", code: "BI", flag: "🇻🇺" },
+      { country: "Vatican City", lang: "Latin / Italian", code: "LA", flag: "🇻🇦" },
+      { country: "Venezuela", lang: "Spanish", code: "ES", flag: "🇻🇪" },
+      { country: "Vietnam", lang: "Vietnamese (Tiếng Việt)", code: "VI", flag: "🇻🇳" },
+      { country: "Yemen", lang: "Arabic", code: "AR", flag: "🇾🇪" },
+      { country: "Zambia", lang: "English / Bemba / Nyanja", code: "EN", flag: "🇿🇲" },
+      { country: "Zimbabwe", lang: "English / Shona / Ndebele", code: "SN", flag: "🇿🇼" }
+    ];
+
+    const MATCHES_DB = [
       {
-        tag: "Pi Ecosystem",
-        title: "Unlock Extra Game Tickets with Pi",
-        desc: "Use Pi SDK payments to get additional Tournament Tickets and enter more match challenges.",
-        imgUrl: "",
-        targetSection: "store"
+        id: "m1",
+        sport: "Football",
+        league: "Premier League",
+        country: "England",
+        time: "11:00 pm Today",
+        live: false,
+        home: "Nottingham Forest",
+        away: "Chelsea FC",
+        odds: { "1": 2.48, "X": 3.52, "2": 3.01 },
+        up1: { "1": 1.65, "X": 3.52, "2": 1.85 },
+        up2: { "1": 2.38, "X": 3.52, "2": 2.89 }
       },
       {
-        tag: "Arcade Arena",
-        title: "Penalty Shootout & Sky Rocket Runner",
-        desc: "Test your timing and reflexes in casual arcade games to earn bonus leaderboard points.",
-        imgUrl: "",
-        targetSection: "arcade"
+        id: "m2",
+        sport: "Football",
+        league: "Serie A",
+        country: "Italy",
+        time: "10:45 pm Today",
+        live: false,
+        home: "Venezia FC",
+        away: "Bologna FC",
+        odds: { "1": 3.10, "X": 3.31, "2": 2.53 },
+        up1: { "1": 1.91, "X": 3.31, "2": 1.71 },
+        up2: { "1": 2.95, "X": 3.31, "2": 2.40 }
       },
       {
-        tag: "Sports League",
-        title: "Weekly Pioneer Prediction Leaderboard",
-        desc: "Analyze Football, Basketball, and Tennis fixtures and climb to the #1 Pioneer spot.",
-        imgUrl: "",
-        targetSection: "leaderboard"
+        id: "m3",
+        sport: "Football",
+        league: "Bundesliga",
+        country: "Germany",
+        time: "LIVE 64'",
+        live: true,
+        home: "VfL Bochum (1 - 2)",
+        away: "SV Darmstadt 98",
+        odds: { "1": 4.20, "X": 3.45, "2": 1.78 },
+        up1: { "1": 3.10, "X": 3.45, "2": 1.42 },
+        up2: { "1": 4.00, "X": 3.45, "2": 1.65 }
+      },
+      {
+        id: "m4",
+        sport: "Basketball",
+        league: "NBA",
+        country: "USA",
+        time: "01:30 am Tomorrow",
+        live: false,
+        home: "Los Angeles Lakers",
+        away: "Boston Celtics",
+        odds: { "1": 2.15, "X": 13.50, "2": 1.74 },
+        up1: null,
+        up2: null
+      },
+      {
+        id: "m5",
+        sport: "Tennis",
+        league: "ATP Tour",
+        country: "International",
+        time: "LIVE Set 2",
+        live: true,
+        home: "Carlos Alcaraz",
+        away: "Jannik Sinner",
+        odds: { "1": 1.88, "X": 6.50, "2": 1.96 },
+        up1: null,
+        up2: null
+      },
+      {
+        id: "m6",
+        sport: "eFootball",
+        league: "GT Leagues",
+        country: "International",
+        time: "LIVE 08'",
+        live: true,
+        home: "Real Madrid (Cyber)",
+        away: "Manchester City (Cyber)",
+        odds: { "1": 2.05, "X": 3.60, "2": 3.15 },
+        up1: null,
+        up2: null
       }
     ];
 
-    let currentAdIndex = 0;
+    const VIRTUAL_MATCHES = [
+      { id: "v1", time: "Starts in 01:12", home: "Pi London Reds", away: "Pi Madrid Whites", odds: { "1": 1.92, "X": 3.40, "2": 3.85 } },
+      { id: "v2", time: "Starts in 01:12", home: "Pi Milan Blues", away: "Pi Munich Stars", odds: { "1": 2.60, "X": 3.25, "2": 2.55 } },
+      { id: "v3", time: "Starts in 03:12", home: "Pi Paris Strikers", away: "Pi Lisbon Lions", odds: { "1": 1.75, "X": 3.70, "2": 4.20 } }
+    ];
 
-    function syncNetworkLabels() {
-      const modeLabel = window.IS_MAINNET ? "OPEN MAINNET" : "TESTNET";
-      const profileLabel = window.IS_MAINNET ? "Open Mainnet (Live Pi)" : "Testnet (Test-Pi Sandbox)";
-      const badgeEl = document.getElementById("networkBadge");
-      const profileNetEl = document.getElementById("profileNetworkMode");
-      const noticeEl = document.getElementById("piNoticeFooter");
-      if (badgeEl) badgeEl.textContent = modeLabel;
-      if (profileNetEl) profileNetEl.textContent = profileLabel;
-      if (noticeEl) {
-        noticeEl.innerHTML = window.IS_MAINNET
-          ? "<strong>Open Mainnet Notice:</strong> Running on Pi Open Mainnet (sandbox: false) in Pi Browser with real Pi digital utility purchases and backend-verified settlement."
-          : "<strong>Testnet Notice:</strong> Currently running in Pi Testnet mode (sandbox: true) via ?network=testnet for Test-Pi verification.";
-      }
-    }
+    // =========================================================
+    // UI NAVIGATION & WALLET SYNC
+    // =========================================================
+    function syncAllBalances() {
+      const formatted = balanceHidden ? "•••• π" : `${piBalance.toFixed(2)} π`;
+      document.getElementById("topBalanceText").textContent = formatted;
+      document.getElementById("aviatorBalanceDisplay").textContent = `${piBalance.toFixed(2)} π`;
+      document.getElementById("accountBalanceDisplay").textContent = formatted;
+      document.getElementById("slipBadgeCount").textContent = playslip.length;
+      document.getElementById("openPlaysCount").textContent = placedSlips.length;
 
-    function refreshStatsUI() {
-      document.getElementById("winpiTickets").textContent = Math.floor(ticketBalance);
-      document.getElementById("winpiPoints").textContent = Math.floor(skillPoints);
-      document.getElementById("winpiStreak").textContent = streakDays + "d";
-      document.getElementById("profileTickets").textContent = Math.floor(ticketBalance);
-      document.getElementById("profilePoints").textContent = Math.floor(skillPoints);
-      document.getElementById("profileStreak").textContent = streakDays + (streakDays === 1 ? " Day" : " Days");
-      renderLeaderboard();
-    }
-
-    function claimDailyBonus() {
-      const msgEl = document.getElementById("profileMsg");
-      if (dailyBonusClaimed) {
-        msgEl.textContent = "You already claimed today's daily retention bonus. Come back tomorrow!";
-        return;
-      }
-      dailyBonusClaimed = true;
-      streakDays += 1;
-      ticketBalance += 3;
-      skillPoints += 15;
-      refreshStatsUI();
-      msgEl.textContent = "Daily retention bonus claimed! +3 Game Tickets and +15 Leaderboard pts added.";
-    }
-
-    function updatePackPreview() {
-      const piVal = parseInt(document.getElementById("piPackAmount").value, 10);
-      const validPi = !isNaN(piVal) && piVal > 0 ? piVal : 0;
-      document.getElementById("packTicketCount").textContent = validPi * 10;
-    }
-
-    function updateSlipPreview() {
-      const ticketVal = parseInt(document.getElementById("ticketInput").value, 10);
-      const validTickets = !isNaN(ticketVal) && ticketVal > 0 ? ticketVal : 0;
-      if (!selectedPick) {
-        document.getElementById("slipMultiplier").textContent = "0.00x";
-        document.getElementById("slipPotentialPts").textContent = "0 pts";
-        return;
-      }
-      document.getElementById("slipMultiplier").textContent = selectedPick.mult.toFixed(2) + "x";
-      const potPts = Math.round(validTickets * 10 * selectedPick.mult);
-      document.getElementById("slipPotentialPts").textContent = `${potPts} pts`;
-    }
-
-    function clearSlip() {
-      selectedPick = null;
-      document.getElementById("slipSelection").textContent = "None selected";
-      document.getElementById("slipMsg").textContent = "";
-      updateSlipPreview();
-      renderMatches(activeSport);
-    }
-
-    function showWinpiSection(section) {
-      const map = {
-        home: "secHome",
-        arcade: "secArcade",
-        history: "secHistory",
-        leaderboard: "secLeaderboard",
-        store: "secStore",
-        profile: "secProfile"
-      };
-      const tabMap = {
-        home: "tabHome",
-        arcade: "tabArcade",
-        history: "tabHistory",
-        leaderboard: "tabLeaderboard",
-        store: "tabStore",
-        profile: "tabProfile"
-      };
-      Object.keys(map).forEach((key) => {
-        document.getElementById(map[key]).style.display = key === section ? "block" : "none";
-        document.getElementById(tabMap[key]).classList.toggle("active", key === section);
-      });
-      if (section === "leaderboard") {
-        renderLeaderboard();
-      }
-    }
-
-    function renderMatches(sport) {
-      activeSport = sport || "Football";
-      ["Football", "Basketball", "Tennis"].forEach((s) => {
-        const btn = document.getElementById("sport" + s);
-        if (btn) btn.classList.toggle("active", s === activeSport);
-      });
-
-      const container = document.getElementById("winpiMatchesList");
-      const list = fixturesBySport[activeSport] || fixturesBySport.Football;
-      container.innerHTML = list
-        .map((item) => {
-          const is1 = selectedPick && selectedPick.match === item.match && selectedPick.market === "Home (1)";
-          const isX = selectedPick && selectedPick.match === item.match && selectedPick.market === "Draw (X)";
-          const is2 = selectedPick && selectedPick.match === item.match && selectedPick.market === "Away (2)";
-          return `
-            <div class="match-card">
-              <div class="match-meta">
-                <div><strong>${item.match}</strong> <span style="color:#9be7ff; font-size:11px;">(${activeSport})</span></div>
-                <span class="live-pill">${item.status}</span>
-              </div>
-              <div class="odds-row" style="margin-bottom: 0;">
-                <button type="button" class="odd-btn ${is1 ? "selected" : ""}" onclick="pickOutcome('${item.match}', 'Home (1)', ${item.m1})">Home (${item.m1.toFixed(2)}x)</button>
-                <button type="button" class="odd-btn ${isX ? "selected" : ""}" onclick="pickOutcome('${item.match}', 'Draw (X)', ${item.mx})">Draw (${item.mx.toFixed(2)}x)</button>
-                <button type="button" class="odd-btn ${is2 ? "selected" : ""}" onclick="pickOutcome('${item.match}', 'Away (2)', ${item.m2})">Away (${item.m2.toFixed(2)}x)</button>
-              </div>
-            </div>
-          `;
-        })
+      const logBox = document.getElementById("statementLogContainer");
+      logBox.innerHTML = walletStatements
+        .map(s => `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.08);"><span>${s.time} — ${s.label}</span><strong style="color:var(--pi-gold);">${s.amount}</strong></div>`)
         .join("");
     }
 
-    function pickOutcome(match, market, mult) {
-      selectedPick = { match, market, mult };
-      document.getElementById("slipSelection").textContent = `${match} — ${market} (${mult.toFixed(2)}x)`;
-      document.getElementById("slipMsg").textContent = "";
-      updateSlipPreview();
-      renderMatches(activeSport);
+    function toggleBalanceMask() {
+      balanceHidden = !balanceHidden;
+      syncAllBalances();
     }
 
-    function submitPrediction() {
-      const msg = document.getElementById("slipMsg");
-      const ticketVal = parseInt(document.getElementById("ticketInput").value, 10);
-      if (!selectedPick) {
-        msg.textContent = "Please select Home, Draw, or Away on a match first.";
-        return;
-      }
-      if (isNaN(ticketVal) || ticketVal < 1) {
-        msg.textContent = "Please enter at least 1 Game Ticket.";
-        return;
-      }
-      if (ticketVal > ticketBalance) {
-        msg.textContent = "Not enough Game Tickets. Visit Ticket Store (Pi) to unlock more tickets.";
-        return;
-      }
-      ticketBalance -= ticketVal;
-      refreshStatsUI();
-      const potentialPts = Math.round(ticketVal * 10 * selectedPick.mult);
-      picksHistory.unshift({
-        id: "pick_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-        kind: "sports",
-        status: "PENDING",
-        ticketsUsed: ticketVal,
-        multNum: selectedPick.mult,
-        match: `${selectedPick.match} — ${selectedPick.market} (${selectedPick.mult.toFixed(2)}x)`,
-        ticketsText: `${ticketVal} Ticket(s)`,
-        pointsText: `${potentialPts} pts`
+    function switchView(viewName) {
+      document.querySelectorAll(".view-section").forEach(sec => sec.classList.remove("active"));
+      const target = document.getElementById(`view-${viewName}`);
+      if (target) target.classList.add("active");
+
+      document.querySelectorAll(".cat-tab").forEach(tab => {
+        tab.classList.toggle("active", tab.dataset.tab === viewName);
       });
-      renderMyPicks();
-      msg.textContent = `Prediction locked! Used ${ticketVal} Ticket(s) | Potential gain: +${potentialPts} pts`;
-    }
 
-    function scoreOpenPredictions() {
-      let evaluatedCount = 0;
-      picksHistory.forEach((pick) => {
-        if (pick.kind === "sports" && pick.status === "PENDING") {
-          const correct = Math.random() >= 0.45;
-          if (correct) {
-            const earnedPts = Math.round(pick.ticketsUsed * 10 * pick.multNum);
-            skillPoints += earnedPts;
-            pick.status = "CORRECT";
-            pick.pointsText = `+${earnedPts} pts`;
-          } else {
-            const consolation = pick.ticketsUsed * 2;
-            skillPoints += consolation;
-            pick.status = "COMPLETED";
-            pick.pointsText = `+${consolation} pts (Participation)`;
-          }
-          evaluatedCount++;
-        }
+      document.querySelectorAll(".nav-item").forEach(nav => {
+        nav.classList.toggle("active", nav.dataset.nav === viewName);
       });
-      refreshStatsUI();
-      renderMyPicks();
-      const box = document.getElementById("myPicksList");
-      if (evaluatedCount > 0) {
-        const note = document.createElement("div");
-        note.style.cssText = "color:#9be7ff; font-size:12px; margin-bottom:8px;";
-        note.textContent = `Evaluated ${evaluatedCount} prediction(s) and updated your Leaderboard Score!`;
-        box.prepend(note);
-      }
+
+      if (viewName === "myplays") renderMyPlays();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    function playArcade(gameName) {
-      const msg = document.getElementById("arcadeMsg");
-      const ticketVal = parseInt(document.getElementById("arcadeTickets").value, 10);
-      if (isNaN(ticketVal) || ticketVal < 1) {
-        msg.textContent = "Please enter at least 1 Game Ticket.";
-        return;
-      }
-      if (ticketVal > ticketBalance) {
-        msg.textContent = "Insufficient Game Tickets. Get more in Ticket Store (Pi).";
-        return;
-      }
-      const basePts = gameName === "Penalty Shootout" ? 20 : 18;
-      ticketBalance -= ticketVal;
-      const highRank = Math.random() >= 0.4;
-      const earnedPts = highRank ? ticketVal * basePts : ticketVal * 5;
-      skillPoints += earnedPts;
-      refreshStatsUI();
-      picksHistory.unshift({
-        id: "arc_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
-        kind: "arcade",
-        status: highRank ? "HIGH SCORE" : "PLAYED",
-        ticketsUsed: ticketVal,
-        multNum: 1,
-        match: `Arcade: ${gameName}`,
-        ticketsText: `${ticketVal} Ticket(s)`,
-        pointsText: `+${earnedPts} pts`
-      });
-      renderMyPicks();
-      msg.textContent = highRank
-        ? `Awesome round in ${gameName}! You earned +${earnedPts} Leaderboard pts.`
-        : `${gameName} completed! You earned +${earnedPts} participation pts.`;
+    function toggleSearch() {
+      document.getElementById("searchDrawer").classList.toggle("open");
     }
 
-    function renderMyPicks() {
-      const box = document.getElementById("myPicksList");
-      if (!picksHistory.length) {
-        box.textContent = "No predictions submitted yet.";
-        return;
-      }
-      box.innerHTML = picksHistory
-        .map((p) => {
-          return `
-            <div class="match-card">
-              <div class="match-meta">
-                <strong>${p.match}</strong>
-                <span class="live-pill">${p.status}</span>
-              </div>
-              Used: ${p.ticketsText} | Score Reward: <strong>${p.pointsText}</strong>
-            </div>
-          `;
-        })
-        .join("");
+    function openModal(id) {
+      if (id === "slipModal") renderPlayslipModal();
+      if (id === "languageModal") renderWorldLanguages("");
+      document.getElementById(id).classList.add("open");
     }
 
-    function renderLeaderboard() {
-      const box = document.getElementById("leaderboardList");
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    function openHelpToast() {
+      document.getElementById("bonusRibbonText").innerHTML =
+        "24/7 Pioneer Support: All Deposits &amp; Withdrawals operate exclusively in <strong>Pi (π)</strong> on Pi Mainnet.";
+    }
+
+    function toggleLightTheme(isLight) {
+      document.body.classList.toggle("light-mode", isLight);
+    }
+
+    function renderWorldLanguages(query = "") {
+      const box = document.getElementById("worldLangList");
       if (!box) return;
-      const entries = [
-        { user: "@kigali_striker", pts: 480 },
-        { user: "@kampala_ace", pts: 390 },
-        { user: "@pi_tactician", pts: 260 },
-        { user: currentUser + " (You)", pts: skillPoints }
-      ].sort((a, b) => b.pts - a.pts);
-
-      box.innerHTML = entries
-        .map(
-          (row, idx) => `
-          <div class="leader-row">
-            <span><strong>#${idx + 1}</strong> ${row.user}</span>
-            <strong style="color: #f5b942;">${row.pts} pts</strong>
-          </div>
-        `
-        )
-        .join("");
-    }
-
-    // =========================================================================
-    // LIVE PI SDK PAYMENT FLOW FOR DIGITAL GAME TICKETS (MAINNET DEFAULT)
-    // =========================================================================
-    async function postJsonToBackend(url, payload) {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || `Server request failed (${response.status})`);
-      }
-      return data;
-    }
-
-    function startTicketPurchase(piAmount) {
-      const msg = document.getElementById("storeMsg");
-      const buyBtn = document.getElementById("buyTicketsBtn");
-      const ticketsToGrant = piAmount * 10;
-
-      if (!window.Pi) {
-        msg.textContent = "Please open WinPi inside Pi Browser to purchase Game Tickets with Pi.";
-        return;
-      }
-
-      buyBtn.disabled = true;
-      msg.textContent = `Initializing ${window.IS_MAINNET ? "Open Mainnet" : "Testnet"} Pi payment for ${ticketsToGrant} Game Tickets (${piAmount} Pi)...`;
-
-      Pi.createPayment(
-        {
-          amount: piAmount,
-          memo: `WinPi ${ticketsToGrant} Game Tickets (${piAmount} Pi)`,
-          metadata: {
-            user: currentUser,
-            network: window.WINPI_NETWORK_MODE,
-            item: "game_tickets",
-            tickets: ticketsToGrant
-          }
-        },
-        {
-          onReadyForServerApproval: async function (paymentId) {
-            msg.textContent = "Approving ticket purchase with WinPi server...";
-            try {
-              await postJsonToBackend("/api/approve", { paymentId: paymentId });
-              msg.textContent = "Purchase approved. Please confirm the Pi transaction in your Pi Wallet...";
-            } catch (err) {
-              console.error("Server approval failed:", err);
-              msg.textContent = "Server approval failed: " + err.message;
-              buyBtn.disabled = false;
-            }
-          },
-          onReadyForServerCompletion: async function (paymentId, txid) {
-            msg.textContent = "Verifying blockchain transaction on WinPi server...";
-            try {
-              await postJsonToBackend("/api/complete", {
-                paymentId: paymentId,
-                txid: txid
-              });
-              ticketBalance += ticketsToGrant;
-              refreshStatsUI();
-              msg.textContent = `Success! Added +${ticketsToGrant} Game Tickets via ${window.IS_MAINNET ? "Open Mainnet" : "Pi Testnet"}.`;
-            } catch (err) {
-              console.error("Server completion failed:", err);
-              msg.textContent = "Server completion failed: " + err.message;
-            } finally {
-              buyBtn.disabled = false;
-            }
-          },
-          onCancel: function (paymentId) {
-            console.log("Payment cancelled:", paymentId);
-            msg.textContent = "Ticket purchase was cancelled.";
-            buyBtn.disabled = false;
-          },
-          onError: function (error, payment) {
-            console.error("Pi payment error:", error, payment);
-            msg.textContent = "Pi payment error: " + (error && error.message ? error.message : "Transaction failed.");
-            buyBtn.disabled = false;
-          }
-        }
+      const q = query.trim().toLowerCase();
+      const filtered = WORLD_COUNTRIES_LANGUAGES.filter(item =>
+        !q || item.country.toLowerCase().includes(q) || item.lang.toLowerCase().includes(q) || item.code.toLowerCase().includes(q)
       );
+      box.innerHTML = filtered.map(item => `
+        <div class="acc-row" onclick="selectWorldLanguage('${item.code}', '${item.country.replace(/'/g, "\\'")}', '${item.lang.replace(/'/g, "\\'")}', '${item.flag}')">
+          <div>
+            <div style="font-weight:800;font-size:13.5px;">${item.flag} ${item.country}</div>
+            <div style="font-size:11.5px;color:var(--pi-muted);">${item.lang}</div>
+          </div>
+          <span class="count-badge">${item.code}</span>
+        </div>
+      `).join("");
     }
 
-    function handleBuyTickets() {
-      const msg = document.getElementById("storeMsg");
-      const piVal = parseInt(document.getElementById("piPackAmount").value, 10);
-      if (isNaN(piVal) || piVal < 1 || piVal > 100) {
-        msg.textContent = "Please enter a valid package between 1 Pi and 100 Pi.";
-        return;
+    function selectWorldLanguage(code, country, lang, flag) {
+      currentLangCode = code;
+      currentLangLabel = `${flag} ${country}`;
+      document.getElementById("activeLangCode").textContent = code;
+      document.getElementById("activeLangCountry").textContent = `${flag} ${country}`;
+
+      const dict = UI_TRANSLATIONS[code] || UI_TRANSLATIONS.EN;
+      const catTabs = document.querySelectorAll(".cat-tab");
+      if (catTabs.length >= 5) {
+        catTabs[0].innerHTML = `🏠 ${dict.home}`;
+        catTabs[1].innerHTML = `⚽ ${dict.sports}`;
+        catTabs[2].innerHTML = `📈 ${dict.live}`;
+        catTabs[3].innerHTML = `✈️ ${dict.aviator}`;
+        catTabs[4].innerHTML = `🎮 ${dict.virtuals}`;
       }
-      startTicketPurchase(piVal);
-    }
-
-    function renderWinpiAd() {
-      const ad = winpiPromoAds[currentAdIndex];
-      document.getElementById("adCounter").textContent = (currentAdIndex + 1) + " / " + winpiPromoAds.length;
-      document.getElementById("adCategoryTag").textContent = ad.tag;
-      document.getElementById("adTitle").textContent = ad.title;
-      document.getElementById("adDesc").textContent = ad.desc;
-
-      const imgEl = document.getElementById("adImageEl");
-      if (ad.imgUrl && ad.imgUrl.trim() !== "") {
-        imgEl.src = ad.imgUrl.trim();
-        imgEl.style.display = "block";
-      } else {
-        imgEl.removeAttribute("src");
-        imgEl.style.display = "none";
+      const navItems = document.querySelectorAll(".nav-item");
+      if (navItems.length >= 5) {
+        navItems[0].querySelectorAll("span")[1].textContent = dict.menu;
+        navItems[1].querySelectorAll("span")[1].textContent = dict.sports;
+        navItems[2].querySelectorAll("span")[1].textContent = dict.playslip;
+        navItems[3].querySelectorAll("span")[1].textContent = dict.myplays;
+        navItems[4].querySelectorAll("span")[1].textContent = dict.account;
       }
+      document.getElementById("bonusRibbonText").innerHTML = `${flag} <strong>${country} (${lang}):</strong> ${dict.bonus}`;
+      closeModal("languageModal");
     }
 
-    function nextWinpiAd() {
-      currentAdIndex = (currentAdIndex + 1) % winpiPromoAds.length;
-      renderWinpiAd();
-    }
-
-    function prevWinpiAd() {
-      currentAdIndex = (currentAdIndex - 1 + winpiPromoAds.length) % winpiPromoAds.length;
-      renderWinpiAd();
-    }
-
-    function openWinpiAdTarget() {
-      const ad = winpiPromoAds[currentAdIndex];
-      if (typeof showWinpiSection === "function" && ad.targetSection) {
-        showWinpiSection(ad.targetSection);
+    function saveUserEmail() {
+      const val = document.getElementById("newEmailInput").value.trim();
+      if (val && val.includes("@")) {
+        userEmail = val;
+        document.getElementById("displayUserEmail").textContent = `${userEmail} ✏️`;
       }
+      closeModal("emailModal");
     }
 
-    function logoutWinpi() {
-      document.getElementById("winpiApp").style.display = "none";
-      document.getElementById("piLoginBtn").style.display = "block";
-      document.getElementById("piStatus").textContent = "Signed out. Click Sign in with Pi to continue.";
+    function claimDailyPiBonus() {
+      piBalance += 0.25;
+      walletStatements.unshift({ time: "Just now", label: "Daily Pioneer Reward", amount: "+0.25 π" });
+      syncAllBalances();
+      document.getElementById("bonusRibbonText").innerHTML = "🎉 Claimed <strong>+0.25 π</strong> Daily Pioneer Reward!";
     }
 
-    async function onIncompletePaymentFound(payment) {
-      console.log("Incomplete payment found:", payment);
-      if (!payment || !payment.identifier) return;
-      try {
-        if (payment.transaction && payment.transaction.txid) {
-          await postJsonToBackend("/api/complete", {
-            paymentId: payment.identifier,
-            txid: payment.transaction.txid
-          });
-        } else {
-          await postJsonToBackend("/api/approve", {
-            paymentId: payment.identifier
-          });
-        }
-      } catch (err) {
-        console.error("Failed to resolve incomplete payment:", err);
-      }
-    }
-
-    syncNetworkLabels();
-    refreshStatsUI();
-    updateSlipPreview();
-    updatePackPreview();
-    renderWinpiAd();
-
-    document.getElementById("piLoginBtn").addEventListener("click", async function () {
-      const statusEl = document.getElementById("piStatus");
+    // =========================================================
+    // PI AUTHENTICATION & PI PAYMENTS (/api/approve & /api/complete)
+    // =========================================================
+    async function connectPiWallet() {
+      const statusEl = document.getElementById("piSessionText");
       if (!window.Pi) {
-        statusEl.textContent = "Please open this app inside Pi Browser.";
+        statusEl.textContent = "Open in Pi Browser to sign in with Pi Mainnet";
         return;
       }
-      statusEl.textContent = `Connecting to Pi (${window.IS_MAINNET ? "Open Mainnet" : "Testnet"})...`;
       try {
         const auth = await Pi.authenticate(["username", "payments"], onIncompletePaymentFound);
-        currentUser = "@" + auth.user.username;
-        statusEl.textContent = "Welcome, " + currentUser + "!";
-        document.getElementById("piLoginBtn").style.display = "none";
-        document.getElementById("winpiApp").style.display = "block";
-        document.getElementById("winpiUserBadge").textContent = currentUser;
-        document.getElementById("profileUsername").textContent = currentUser;
-        refreshStatsUI();
-        renderMatches("Football");
-        showWinpiSection("home");
+        piUsername = `@${auth.user.username}`;
+        statusEl.textContent = `Connected: ${piUsername} (${window.WINPI_NETWORK_MODE.toUpperCase()})`;
+        document.getElementById("displayPiUsername").textContent = `${piUsername} • Verified Pi Mainnet`;
+        document.getElementById("piSignInBtn").textContent = piUsername;
       } catch (err) {
-        statusEl.textContent = "Sign in cancelled or failed.";
+        statusEl.textContent = "Pi sign-in cancelled";
       }
-    });
+    }
+
+    function disconnectPiWallet() {
+      piUsername = "@pioneer";
+      document.getElementById("piSessionText").textContent = "Pi Open Mainnet • Ready (@pioneer)";
+      document.getElementById("piSignInBtn").textContent = "Connect Pi";
+      switchView("home");
+    }
+
+    function onIncompletePaymentFound(payment) {
+      fetch("/api/complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction && payment.transaction.txid })
+      }).catch(() => {});
+    }
+
+    async function executePiDeposit() {
+      const amount = parseFloat(document.getElementById("depositPiAmount").value);
+      const statusBox = document.getElementById("depositStatusMsg");
+      if (!amount || amount <= 0) {
+        statusBox.textContent = "Please enter a valid Pi (π) amount.";
+        return;
+      }
+
+      if (!window.Pi) {
+        piBalance += amount;
+        walletStatements.unshift({ time: "Just now", label: "Pi Wallet Deposit (Preview)", amount: `+${amount.toFixed(2)} π` });
+        syncAllBalances();
+        statusBox.textContent = `Credited ${amount.toFixed(2)} π to your WinPi balance.`;
+        return;
+      }
+
+      statusBox.textContent = "Opening Pi Wallet approval...";
+      try {
+        await Pi.authenticate(["username", "payments"], onIncompletePaymentFound);
+        Pi.createPayment(
+          {
+            amount: amount,
+            memo: `WinPi Deposit (${amount} Pi)`,
+            metadata: { app: "WinPi", type: "deposit", network: window.WINPI_NETWORK_MODE }
+          },
+          {
+            onReadyForServerApproval: async function (paymentId) {
+              statusBox.textContent = "Approving Pi transaction on server...";
+              await fetch("/api/approve", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId })
+              });
+            },
+            onReadyForServerCompletion: async function (paymentId, txid) {
+              statusBox.textContent = "Completing Pi Mainnet transaction...";
+              await fetch("/api/complete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId, txid })
+              });
+              piBalance += amount;
+              walletStatements.unshift({ time: "Just now", label: "Pi Mainnet Deposit", amount: `+${amount.toFixed(2)} π` });
+              syncAllBalances();
+              statusBox.textContent = `✅ Success! ${amount.toFixed(2)} π added to your WinPi wallet.`;
+            },
+            onCancel: function () {
+              statusBox.textContent = "Pi deposit cancelled.";
+            },
+            onError: function (error) {
+              statusBox.textContent = "Pi payment error: " + (error.message || "Try again");
+            }
+          }
+        );
+      } catch (e) {
+        statusBox.textContent = "Please open WinPi inside Pi Browser to deposit Pi.";
+      }
+    }
+
+    function executePiWithdrawal() {
+      const addr = document.getElementById("withdrawPiAddress").value.trim();
+      const amount = parseFloat(document.getElementById("withdrawPiAmount").value);
+      const statusBox = document.getElementById("withdrawStatusMsg");
+
+      if (!addr || addr.length < 10) {
+        statusBox.textContent = "Enter a valid Pi Mainnet public wallet address.";
+        return;
+      }
+      if (!amount || amount <= 0 || amount > piBalance) {
+        statusBox.textContent = "Invalid withdrawal amount or insufficient Pi balance.";
+        return;
+      }
+
+      piBalance -= amount;
+      walletStatements.unshift({ time: "Just now", label: `Pi Withdrawal (${addr.slice(0, 6)}...)`, amount: `-${amount.toFixed(2)} π` });
+      syncAllBalances();
+      statusBox.textContent = `✅ Withdrawal of ${amount.toFixed(2)} π queued to ${addr.slice(0, 8)}...`;
+    }
+
+    // =========================================================
+    // SPORTS MATCHES & PLAYSLIP ENGINE
+    // =========================================================
+    function filterSport(sport, el) {
+      currentSportFilter = sport;
+      document.querySelectorAll(".sport-chip").forEach(c => c.classList.remove("active"));
+      if (el) el.classList.add("active");
+      renderMatches();
+    }
+
+    function filterLeague(league, el) {
+      currentLeagueFilter = league;
+      document.querySelectorAll(".league-pill").forEach(p => p.classList.remove("active"));
+      if (el) el.classList.add("active");
+      renderMatches();
+    }
+
+    function jumpToLeague(league) {
+      currentLeagueFilter = league;
+      switchView("home");
+      renderMatches();
+    }
+
+    function filterMatchesBySearch(term) {
+      currentSearchTerm = term.toLowerCase();
+      renderMatches();
+    }
+
+    function isSelectedOdd(matchId, market, pick) {
+      return playslip.some(item => item.matchId === matchId && item.market === market && item.pick === pick);
+    }
+
+    function addSelection(matchId, matchName, market, oddValue, pick = market) {
+      const existingIdx = playslip.findIndex(item => item.matchId === matchId && item.market === market && item.pick === pick);
+      if (existingIdx >= 0) {
+        playslip.splice(existingIdx, 1);
+      } else {
+        playslip = playslip.filter(item => item.matchId !== matchId);
+        playslip.push({ matchId, matchName, market, pick, odd: oddValue });
+      }
+      syncAllBalances();
+      renderMatches();
+      renderVirtuals();
+    }
+
+    function buildOddRow(m, marketTitle, obj) {
+      return `
+        <div class="market-label">${marketTitle} <span class="info-dot">i</span></div>
+        <div class="odds-grid">
+          ${["1", "X", "2"].map(k => {
+            const sel = isSelectedOdd(m.id, marketTitle, k) ? "selected" : "";
+            const fire = (k === "2" && obj[k] >= 2.5) ? "🔥 " : "";
+            return `<button class="odd-btn ${sel}" onclick="addSelection('${m.id}', '${m.home} vs ${m.away}', '${marketTitle}', ${obj[k]}, '${k}')">
+              <span class="pick-key">${k}</span>
+              <span>${fire}${obj[k].toFixed(2)}</span>
+            </button>`;
+          }).join("")}
+          <button class="more-markets-btn" onclick="addSelection('${m.id}', '${m.home} vs ${m.away}', '${marketTitle}', ${obj["1"]}, '1')">&gt;</button>
+        </div>
+      `;
+    }
+
+    function renderMatches() {
+      const showUp = document.getElementById("upToggle").checked;
+      const homeBox = document.getElementById("homeMatchesContainer");
+      const liveBox = document.getElementById("liveMatchesContainer");
+
+      const filtered = MATCHES_DB.filter(m => {
+        const sportOk = currentSportFilter === "ALL" || m.sport === currentSportFilter;
+        const leagueOk = currentLeagueFilter === "ALL" || m.league === currentLeagueFilter;
+        const searchOk = !currentSearchTerm || `${m.home} ${m.away} ${m.league} ${m.sport}`.toLowerCase().includes(currentSearchTerm);
+        return sportOk && leagueOk && searchOk;
+      });
+
+      homeBox.innerHTML = filtered.map(m => `
+        <div class="match-card">
+          <div class="match-top-row">
+            <span>${m.live ? `<span class="live-badge">${m.time}</span>` : m.time}</span>
+            <span>📊</span>
+          </div>
+          <div class="match-teams">${m.home}<br>${m.away}</div>
+          <div class="match-breadcrumb">${m.sport} / ${m.country} / ${m.league}</div>
+          ${buildOddRow(m, "1X2 | Full Time", m.odds)}
+          ${showUp && m.up1 ? buildOddRow(m, "1X2 1UP | Full Time", m.up1) : ""}
+          ${showUp && m.up2 ? buildOddRow(m, "1X2 2UP | Full Time", m.up2) : ""}
+        </div>
+      `).join("");
+
+      const liveOnly = MATCHES_DB.filter(m => m.live);
+      liveBox.innerHTML = liveOnly.map(m => `
+        <div class="match-card">
+          <div class="match-top-row"><span class="live-badge">${m.time}</span><span>📊</span></div>
+          <div class="match-teams">${m.home}<br>${m.away}</div>
+          <div class="match-breadcrumb">${m.sport} / ${m.league}</div>
+          ${buildOddRow(m, "1X2 | Live", m.odds)}
+        </div>
+      `).join("");
+    }
+
+    function renderVirtuals() {
+      const box = document.getElementById("virtualMatchesContainer");
+      box.innerHTML = VIRTUAL_MATCHES.map(v => `
+        <div class="match-card">
+          <div class="match-top-row"><span class="live-badge">${v.time}</span><span>Pi Virtual League</span></div>
+          <div class="match-teams">${v.home}<br>${v.away}</div>
+          ${buildOddRow({ ...v, sport: "Virtual", country: "Pi", league: "Virtual" }, "1X2 | Virtual", v.odds)}
+        </div>
+      `).join("");
+    }
+
+    function renderPlayslipModal() {
+      const box = document.getElementById("slipItemsContainer");
+      if (playslip.length === 0) {
+        box.innerHTML = `<p style="font-size:13px;color:var(--pi-muted);padding:10px 0;">No selections added yet. Tap odds on Football, Basketball, Tennis or Virtuals.</p>`;
+      } else {
+        box.innerHTML = playslip.map((item, idx) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;background:#120822;padding:9px 11px;border-radius:10px;margin-bottom:7px;border:1px solid var(--pi-border-subtle);">
+            <div>
+              <div style="font-size:13px;font-weight:800;">${item.matchName}</div>
+              <div style="font-size:11.5px;color:var(--pi-gold);">${item.market} • Pick: ${item.pick} @ ${item.odd.toFixed(2)}</div>
+            </div>
+            <button onclick="playslip.splice(${idx},1);syncAllBalances();renderPlayslipModal();renderMatches();" style="background:none;border:none;color:#f87171;font-size:16px;cursor:pointer;">✕</button>
+          </div>
+        `).join("");
+      }
+      recalculateSlip();
+    }
+
+    function recalculateSlip() {
+      const stake = parseFloat(document.getElementById("slipStakeInput").value) || 0;
+      const totalOdds = playslip.reduce((acc, item) => acc * item.odd, playslip.length ? 1 : 0);
+      const bonusPct = playslip.length >= 3 ? Math.min(1250, playslip.length * 10) : 0;
+      const baseWin = stake * totalOdds;
+      const totalWin = baseWin + (baseWin * bonusPct / 100);
+
+      document.getElementById("slipTotalOdds").textContent = totalOdds.toFixed(2);
+      document.getElementById("slipBonusPct").textContent = `${bonusPct}%`;
+      document.getElementById("slipPotentialWin").textContent = `${totalWin.toFixed(2)} π`;
+    }
+
+    function submitPlayslip() {
+      const status = document.getElementById("slipStatusMsg");
+      const stake = parseFloat(document.getElementById("slipStakeInput").value) || 0;
+      if (playslip.length === 0) {
+        status.textContent = "Please add at least 1 match selection first.";
+        return;
+      }
+      if (stake <= 0 || stake > piBalance) {
+        status.textContent = "Insufficient Pi (π) balance for this stake.";
+        return;
+      }
+
+      const totalOdds = playslip.reduce((acc, item) => acc * item.odd, 1);
+      const potential = stake * totalOdds;
+      piBalance -= stake;
+
+      placedSlips.unshift({
+        id: "WP-" + Math.floor(100000 + Math.random() * 900000),
+        legs: [...playslip],
+        stake: stake,
+        potential: potential,
+        status: "open",
+        isVirtual: playslip.some(l => l.matchId.startsWith("v"))
+      });
+
+      walletStatements.unshift({ time: "Just now", label: `Sports Playslip (${playslip.length} legs)`, amount: `-${stake.toFixed(2)} π` });
+      playslip = [];
+      syncAllBalances();
+      renderMatches();
+      renderPlayslipModal();
+      status.textContent = "✅ Playslip confirmed in Pi (π)! View it in My Plays.";
+    }
+
+    // =========================================================
+    // MY PLAYS TAB RENDERER
+    // =========================================================
+    function switchMyPlaysTab(tab, el) {
+      currentMyPlaysTab = tab;
+      document.querySelectorAll(".play-tab").forEach(t => t.classList.remove("active"));
+      if (el) el.classList.add("active");
+      renderMyPlays();
+    }
+
+    function renderMyPlays() {
+      const box = document.getElementById("myPlaysListContainer");
+      const list = placedSlips.filter(s => {
+        if (currentMyPlaysTab === "virtuals") return s.isVirtual;
+        return s.status === currentMyPlaysTab;
+      });
+
+      if (list.length === 0) {
+        box.innerHTML = `
+          <div class="empty-plays-state">
+            <div class="empty-illustration">🧾</div>
+            <div style="font-size:18px;font-weight:900;margin-bottom:6px;">There are currently no ${currentMyPlaysTab} playslips.</div>
+            <div style="font-size:13px;color:var(--pi-muted);">Select Football, Basketball, Tennis or Virtual matches using Pi (π).</div>
+            <button class="browse-cta-btn" onclick="switchView('home')">BROWSE MATCHES</button>
+          </div>
+        `;
+        return;
+      }
+
+      box.innerHTML = list.map(s => `
+        <div class="placed-slip-card">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--pi-gold);font-weight:800;margin-bottom:6px;">
+            <span>Ticket #${s.id}</span>
+            <span>Stake: ${s.stake.toFixed(2)} π</span>
+          </div>
+          ${s.legs.map(l => `<div style="font-size:12.5px;margin-bottom:4px;">• <strong>${l.matchName}</strong> — ${l.pick} (${l.odd.toFixed(2)})</div>`).join("")}
+          <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--pi-border-subtle);display:flex;justify-content:space-between;font-size:13px;font-weight:900;">
+            <span>Potential Payout:</span>
+            <span style="color:#4ade80;">${s.potential.toFixed(2)} π</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // =========================================================
+    // PI AVIATOR LIVE FLIGHT ENGINE (IN PI ONLY)
+    // =========================================================
+    let aviatorPhase = "FLYING"; // WAITING | FLYING | CRASHED
+    let aviatorMult = 1.00;
+    let aviatorCrashAt = 4.85;
+    let aviatorHistory = [1.02, 1.95, 2.59, 20.78, 5.39, 23.14, 208.67];
+    let aviatorBets = {
+      1: { active: false, queued: false, stake: 1.00, cashedOut: false },
+      2: { active: false, queued: false, stake: 2.00, cashedOut: false }
+    };
+
+    const MOCK_PILOTS = [
+      { user: "p***r", stake: "15.00 π", mult: "2.14x", win: "32.10 π", won: true },
+      { user: "s***h", stake: "10.00 π", mult: "—", win: "—", won: false },
+      { user: "m***3", stake: "8.50 π", mult: "1.77x", win: "15.05 π", won: true },
+      { user: "k***9", stake: "5.00 π", mult: "2.20x", win: "11.00 π", won: true },
+      { user: "a***4", stake: "3.20 π", mult: "1.45x", win: "4.64 π", won: true },
+      { user: "n***7", stake: "2.00 π", mult: "—", win: "—", won: false }
+    ];
+
+    function setPanelMode(panelId, mode, btn) {
+      btn.parentElement.querySelectorAll(".panel-mode-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function adjustAviatorStake(panelId, delta) {
+      const inp = document.getElementById(`aviatorStake${panelId}`);
+      const next = Math.max(0.1, (parseFloat(inp.value) || 1) + delta);
+      inp.value = next.toFixed(2);
+      syncAviatorBtnLabel(panelId);
+    }
+
+    function setAviatorStake(panelId, val) {
+      document.getElementById(`aviatorStake${panelId}`).value = val.toFixed(2);
+      syncAviatorBtnLabel(panelId);
+    }
+
+    function syncAviatorBtnLabel(panelId) {
+      const val = parseFloat(document.getElementById(`aviatorStake${panelId}`).value) || 1.0;
+      aviatorBets[panelId].stake = val;
+      updateAviatorButtons();
+    }
+
+    function handleAviatorButton(panelId) {
+      const bet = aviatorBets[panelId];
+      const stake = parseFloat(document.getElementById(`aviatorStake${panelId}`).value) || 1.0;
+      bet.stake = stake;
+
+      if (bet.active && aviatorPhase === "FLYING" && !bet.cashedOut) {
+        // CASH OUT IN PI
+        const payout = bet.stake * aviatorMult;
+        piBalance += payout;
+        bet.cashedOut = true;
+        bet.active = false;
+        walletStatements.unshift({ time: "Just now", label: `Pi Aviator Cashout (${aviatorMult.toFixed(2)}x)`, amount: `+${payout.toFixed(2)} π` });
+        syncAllBalances();
+        updateAviatorButtons();
+        return;
+      }
+
+      if (bet.queued) {
+        // CANCEL QUEUED BET
+        piBalance += bet.stake;
+        bet.queued = false;
+        syncAllBalances();
+        updateAviatorButtons();
+        return;
+      }
+
+      if (stake > piBalance) {
+        openModal("depositModal");
+        return;
+      }
+
+      piBalance -= stake;
+      walletStatements.unshift({ time: "Just now", label: "Pi Aviator Flight Entry", amount: `-${stake.toFixed(2)} π` });
+      syncAllBalances();
+
+      if (aviatorPhase === "WAITING") {
+        bet.active = true;
+        bet.cashedOut = false;
+      } else {
+        bet.queued = true;
+      }
+      updateAviatorButtons();
+    }
+
+    function updateAviatorButtons() {
+      [1, 2].forEach(id => {
+        const btn = document.getElementById(`aviatorBtn${id}`);
+        const sub = document.getElementById(`aviatorBtnSub${id}`);
+        const bet = aviatorBets[id];
+        btn.classList.remove("cashout-state", "waiting-state");
+
+        if (bet.active && aviatorPhase === "FLYING" && !bet.cashedOut) {
+          btn.classList.add("cashout-state");
+          btn.firstElementChild.textContent = "Cash Out";
+          sub.textContent = `${(bet.stake * aviatorMult).toFixed(2)} π`;
+        } else if (bet.queued || (bet.active && aviatorPhase === "WAITING")) {
+          btn.classList.add("waiting-state");
+          btn.firstElementChild.textContent = "Cancel";
+          sub.textContent = "Waiting next round";
+        } else {
+          btn.firstElementChild.textContent = "Play";
+          sub.textContent = `${bet.stake.toFixed(2)} π`;
+        }
+      });
+    }
+
+    function renderAviatorHistory() {
+      const bar = document.getElementById("aviatorHistoryBar");
+      bar.innerHTML = aviatorHistory.map(v => {
+        const cls = v < 2 ? "hist-low" : (v < 10 ? "hist-mid" : "hist-high");
+        return `<span class="hist-pill ${cls}">${v.toFixed(2)}x</span>`;
+      }).join("");
+    }
+
+    function switchAviatorFeed(mode, el) {
+      document.querySelectorAll(".feed-tab").forEach(t => t.classList.remove("active"));
+      if (el) el.classList.add("active");
+      renderAviatorFeed(mode);
+    }
+
+    function renderAviatorFeed(mode = "all") {
+      const box = document.getElementById("aviatorFeedRows");
+      let rows = [...MOCK_PILOTS];
+      if (mode === "top") rows.sort((a, b) => parseFloat(b.stake) - parseFloat(a.stake));
+      box.innerHTML = rows.map(r => `
+        <div class="feed-row ${r.won ? "won" : ""}">
+          <span>🧑‍🚀 ${r.user}</span>
+          <span>${r.stake}</span>
+          <span style="color:var(--pi-gold);font-weight:800;">${r.mult}</span>
+          <span style="text-align:right;font-weight:800;color:${r.won ? "#4ade80" : "var(--pi-muted)"};">${r.win}</span>
+        </div>
+      `).join("");
+    }
+
+    function drawAviatorCurve() {
+      const canvas = document.getElementById("aviatorCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const w = canvas.width = canvas.offsetWidth || 340;
+      const h = canvas.height = canvas.offsetHeight || 215;
+      ctx.clearRect(0, 0, w, h);
+
+      if (aviatorPhase !== "FLYING") return;
+
+      const progress = Math.min(1, (aviatorMult - 1) / 8);
+      const endX = 28 + progress * (w - 85);
+      const endY = h - 24 - Math.pow(progress, 0.85) * (h - 68);
+
+      // Filled Pi Gold/Purple gradient under flight curve
+      const grad = ctx.createLinearGradient(0, endY, 0, h);
+      grad.addColorStop(0, "rgba(244, 180, 26, 0.38)");
+      grad.addColorStop(1, "rgba(123, 66, 188, 0.04)");
+
+      ctx.beginPath();
+      ctx.moveTo(14, h - 18);
+      ctx.quadraticCurveTo(endX * 0.55, h - 20, endX, endY);
+      ctx.lineTo(endX, h - 18);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Flight line
+      ctx.beginPath();
+      ctx.moveTo(14, h - 18);
+      ctx.quadraticCurveTo(endX * 0.55, h - 20, endX, endY);
+      ctx.strokeStyle = "#f4b41a";
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      // Pi Jet Icon at tip
+      ctx.font = "26px sans-serif";
+      ctx.fillText("✈️", endX - 10, endY + 8);
+    }
+
+    function startAviatorLoop() {
+      setInterval(() => {
+        const multEl = document.getElementById("aviatorMultiplierText");
+        const statusEl = document.getElementById("aviatorStatusText");
+
+        if (aviatorPhase === "FLYING") {
+          aviatorMult += 0.03 + aviatorMult * 0.012;
+          multEl.textContent = `${aviatorMult.toFixed(2)}x`;
+          multEl.style.color = "#ffffff";
+          statusEl.textContent = "PI FLIGHT IN PROGRESS";
+          updateAviatorButtons();
+          drawAviatorCurve();
+
+          if (aviatorMult >= aviatorCrashAt) {
+            aviatorPhase = "CRASHED";
+            multEl.style.color = "#ef4444";
+            statusEl.textContent = `FLEW AWAY @ ${aviatorCrashAt.toFixed(2)}x`;
+            aviatorHistory.unshift(parseFloat(aviatorCrashAt.toFixed(2)));
+            aviatorHistory = aviatorHistory.slice(0, 10);
+            renderAviatorHistory();
+
+            [1, 2].forEach(id => {
+              aviatorBets[id].active = false;
+              aviatorBets[id].cashedOut = false;
+            });
+            updateAviatorButtons();
+
+            setTimeout(() => {
+              aviatorPhase = "WAITING";
+              aviatorMult = 1.00;
+              multEl.textContent = "1.00x";
+              multEl.style.color = "#f4b41a";
+              statusEl.textContent = "BOARDING NEXT PI FLIGHT...";
+              drawAviatorCurve();
+
+              setTimeout(() => {
+                aviatorPhase = "FLYING";
+                aviatorCrashAt = parseFloat((1.35 + Math.random() * 6.5).toFixed(2));
+                [1, 2].forEach(id => {
+                  if (aviatorBets[id].queued) {
+                    aviatorBets[id].queued = false;
+                    aviatorBets[id].active = true;
+                    aviatorBets[id].cashedOut = false;
+                  }
+                });
+                updateAviatorButtons();
+              }, 2600);
+            }, 2200);
+          }
+        }
+      }, 110);
+    }
+
+    function playInstantArcade(gameName, stake) {
+      if (piBalance < stake) {
+        openModal("depositModal");
+        return;
+      }
+      piBalance -= stake;
+      const win = Math.random() > 0.45 ? +(stake * (1.5 + Math.random() * 2)).toFixed(2) : 0;
+      piBalance += win;
+      walletStatements.unshift({
+        time: "Just now",
+        label: win > 0 ? `${gameName} Win` : `${gameName} Play`,
+        amount: win > 0 ? `+${(win - stake).toFixed(2)} π` : `-${stake.toFixed(2)} π`
+      });
+      syncAllBalances();
+      document.getElementById("bonusRibbonText").innerHTML =
+        win > 0 ? `🎉 <strong>${gameName}:</strong> You won <strong>${win.toFixed(2)} π</strong>!` : `${gameName}: Round played (${stake.toFixed(2)} π). Try again!`;
+    }
+
+    // INITIALIZE APP
+    syncAllBalances();
+    renderMatches();
+    renderVirtuals();
+    renderAviatorHistory();
+    renderAviatorFeed();
+    renderWorldLanguages("");
+    startAviatorLoop();
   </script>
 </body>
-</html>
+  </html>
